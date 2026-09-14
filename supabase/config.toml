@@ -1,0 +1,16 @@
+project_id = "yrknyqerubnaqwhyppwr"
+
+[functions.generate-cv]
+verify_jwt = false
+
+[functions.admin-create-user]
+verify_jwt = false
+
+[functions.smart-job-match]
+verify_jwt = false
+
+[functions.ai-interview-coach]
+verify_jwt = false
+
+[functions.ai-course-recommend]
+verify_jwt = false
