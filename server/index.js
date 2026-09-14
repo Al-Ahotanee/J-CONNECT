@@ -37,7 +37,7 @@ app.use('/uploads', express.static(uploadRoot));
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok', timestamp: new Date().toISOString(), platform: 'J-Connect' });
+  res.json({ status: 'ok', timestamp: new Date().toISOString(), platform: 'J-Connect', version: '2.0.0' });
 });
 
 // Mount modular API routes

@@ -4,14 +4,59 @@
 // Seamlessly replaced by Aiven MySQL whenever MYSQL_HOST/MYSQL_URL is provided.
 // ======================================================================
 
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const SNAPSHOT_PATH = path.join(__dirname, 'db_data.json');
+
 const tables = new Map();
 
+// Initialize and restore state from disk if available
+function loadSnapshot() {
+  if (fs.existsSync(SNAPSHOT_PATH)) {
+    try {
+      const content = fs.readFileSync(SNAPSHOT_PATH, 'utf-8');
+      const data = JSON.parse(content);
+      for (const [tbl, rows] of Object.entries(data)) {
+        tables.set(cleanIdentifier(tbl), Array.isArray(rows) ? rows : []);
+      }
+      console.log(`[DB Engine] Restored ${tables.size} tables from persistent storage (${SNAPSHOT_PATH})`);
+    } catch (e) {
+      console.warn('[DB Engine] Warning: Failed to parse db_data.json snapshot:', e.message);
+    }
+  }
+}
+
+// Persist state to disk
+export function saveSnapshot() {
+  try {
+    const data = {};
+    for (const [tbl, rows] of tables.entries()) {
+      data[tbl] = rows;
+    }
+    fs.writeFileSync(SNAPSHOT_PATH, JSON.stringify(data, null, 2), 'utf-8');
+  } catch (e) {
+    console.error('[DB Engine] Failed to persist database snapshot:', e.message);
+  }
+}
+
+// Initial load
+loadSnapshot();
+
 function cleanIdentifier(str) {
-  return str.replace(/[`"' ]/g, '').toLowerCase();
+  if (!str) return '';
+  return str
+    .replace(/[`"' ]/g, '')
+    .replace(/^[a-zA-Z0-9_]+\./, '')
+    .toLowerCase();
 }
 
 export function resetInMemoryDb() {
   tables.clear();
+  saveSnapshot();
 }
 
 export function executeInMemory(sql, params = []) {
@@ -55,28 +100,38 @@ export function executeInMemory(sql, params = []) {
       doc[col] = params[idx] !== undefined ? params[idx] : null;
     });
 
+    if (!doc.id && !cols.includes('id')) {
+      doc.id = 'gen_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+    }
+
     // Check duplicate key on id or unique keys
     const existingIdx = rowList.findIndex(r => {
       if (doc.id && r.id === doc.id) return true;
       if (tbl === 'users' && doc.email && r.email?.toLowerCase() === doc.email?.toLowerCase()) return true;
       if (tbl === 'user_roles' && doc.user_id && doc.role && r.user_id === doc.user_id && r.role === doc.role) return true;
+      if (tbl === 'profiles' && doc.user_id && r.user_id === doc.user_id) return true;
+      if (tbl === 'enrollments' && doc.user_id && doc.course_id && r.user_id === doc.user_id && r.course_id === doc.course_id) return true;
+      if (tbl === 'certificates' && doc.certificate_number && r.certificate_number === doc.certificate_number) return true;
       return false;
     });
 
     if (existingIdx >= 0) {
       if (lower.includes('on duplicate key update')) {
-        rowList[existingIdx] = { ...rowList[existingIdx], ...doc };
+        rowList[existingIdx] = { ...rowList[existingIdx], ...doc, updated_at: new Date().toISOString() };
+        saveSnapshot();
         return [{ insertId: doc.id, affectedRows: 1 }];
       }
       if (lower.includes('ignore')) {
         return [{ insertId: doc.id, affectedRows: 0 }];
       }
-      rowList[existingIdx] = { ...rowList[existingIdx], ...doc };
+      rowList[existingIdx] = { ...rowList[existingIdx], ...doc, updated_at: new Date().toISOString() };
+      saveSnapshot();
       return [{ insertId: doc.id, affectedRows: 1 }];
     }
 
     if (!doc.created_at) doc.created_at = new Date().toISOString();
     rowList.push(doc);
+    saveSnapshot();
     return [{ insertId: doc.id, affectedRows: 1 }];
   }
 
@@ -184,6 +239,7 @@ export function executeInMemory(sql, params = []) {
       }
     }
 
+    saveSnapshot();
     return [{ affectedRows: affected }];
   }
 
@@ -199,6 +255,7 @@ export function executeInMemory(sql, params = []) {
     const kept = tables.get(tbl).filter(r => !matchesWhere(r, wherePart, params));
     tables.set(tbl, kept);
 
+    saveSnapshot();
     return [{ affectedRows: initialLen - kept.length }];
   }
 
@@ -227,16 +284,16 @@ function matchesCondition(row, clause, params) {
   const c = clause.trim();
 
   // JSON_CONTAINS
-  const jsonContainsMatch = c.match(/json_contains\s*\(\s*[`a-zA-Z0-9_]+\s*,\s*json_quote\s*\(\s*\?\s*\)\s*\)/i);
+  const jsonContainsMatch = c.match(/json_contains\s*\(\s*[`a-zA-Z0-9_.]+\s*,\s*json_quote\s*\(\s*\?\s*\)\s*\)/i);
   if (jsonContainsMatch) {
-    const col = cleanIdentifier(c.match(/json_contains\s*\(\s*([`a-zA-Z0-9_]+)/i)[1]);
+    const col = cleanIdentifier(c.match(/json_contains\s*\(\s*([`a-zA-Z0-9_.]+)/i)[1]);
     const val = params.find(p => p !== undefined);
     const arr = typeof row[col] === 'string' ? JSON.parse(row[col] || '[]') : (row[col] || []);
     return Array.isArray(arr) && arr.some(item => String(item).toLowerCase().includes(String(val).toLowerCase()));
   }
 
   // IN (?, ?, ...)
-  const inMatch = c.match(/([`a-zA-Z0-9_]+)\s+in\s*\(([^)]+)\)/i);
+  const inMatch = c.match(/([`a-zA-Z0-9_.]+)\s+in\s*\(([^)]+)\)/i);
   if (inMatch) {
     const col = cleanIdentifier(inMatch[1]);
     const rowVal = String(row[col] || '').toLowerCase();
@@ -244,7 +301,7 @@ function matchesCondition(row, clause, params) {
   }
 
   // LOWER(col) = ?
-  const lowerEqMatch = c.match(/lower\s*\(\s*([`a-zA-Z0-9_]+)\s*\)\s*=\s*\?/i);
+  const lowerEqMatch = c.match(/lower\s*\(\s*([`a-zA-Z0-9_.]+)\s*\)\s*=\s*\?/i);
   if (lowerEqMatch) {
     const col = cleanIdentifier(lowerEqMatch[1]);
     const targetVal = String(params[0] || '').toLowerCase();
@@ -252,15 +309,69 @@ function matchesCondition(row, clause, params) {
   }
 
   // col LIKE ?
-  const likeMatch = c.match(/([`a-zA-Z0-9_]+)\s+(?:i?like)\s+\?/i);
+  const likeMatch = c.match(/([`a-zA-Z0-9_.]+)\s+(?:i?like)\s+\?/i);
   if (likeMatch) {
     const col = cleanIdentifier(likeMatch[1]);
     const targetPattern = String(params[0] || '').replace(/%/g, '').toLowerCase();
     return String(row[col] || '').toLowerCase().includes(targetPattern);
   }
 
+  // IS NULL / IS NOT NULL
+  if (c.toLowerCase().includes('is not null')) {
+    const col = cleanIdentifier(c.replace(/is not null/i, ''));
+    return row[col] !== null && row[col] !== undefined;
+  }
+  if (c.toLowerCase().includes('is null')) {
+    const col = cleanIdentifier(c.replace(/is null/i, ''));
+    return row[col] === null || row[col] === undefined;
+  }
+
+  // col = TRUE / FALSE
+  const trueMatch = c.match(/([`a-zA-Z0-9_.]+)\s*=\s*true/i);
+  if (trueMatch) {
+    const col = cleanIdentifier(trueMatch[1]);
+    return row[col] === true || row[col] === 1 || row[col] === '1';
+  }
+  const falseMatch = c.match(/([`a-zA-Z0-9_.]+)\s*=\s*false/i);
+  if (falseMatch) {
+    const col = cleanIdentifier(falseMatch[1]);
+    return row[col] === false || row[col] === 0 || row[col] === '0';
+  }
+
+  // col >= ?
+  const gteMatch = c.match(/([`a-zA-Z0-9_.]+)\s*>=\s*\?/i);
+  if (gteMatch) {
+    const col = cleanIdentifier(gteMatch[1]);
+    const targetVal = params.find(p => p !== undefined);
+    return Number(row[col]) >= Number(targetVal);
+  }
+
+  // col <= ?
+  const lteMatch = c.match(/([`a-zA-Z0-9_.]+)\s*<=\s*\?/i);
+  if (lteMatch) {
+    const col = cleanIdentifier(lteMatch[1]);
+    const targetVal = params.find(p => p !== undefined);
+    return Number(row[col]) <= Number(targetVal);
+  }
+
+  // col > ?
+  const gtMatch = c.match(/([`a-zA-Z0-9_.]+)\s*>\s*\?/i);
+  if (gtMatch) {
+    const col = cleanIdentifier(gtMatch[1]);
+    const targetVal = params.find(p => p !== undefined);
+    return Number(row[col]) > Number(targetVal);
+  }
+
+  // col < ?
+  const ltMatch = c.match(/([`a-zA-Z0-9_.]+)\s*<\s*\?/i);
+  if (ltMatch) {
+    const col = cleanIdentifier(ltMatch[1]);
+    const targetVal = params.find(p => p !== undefined);
+    return Number(row[col]) < Number(targetVal);
+  }
+
   // col = ?
-  const eqMatch = c.match(/([`a-zA-Z0-9_]+)\s*=\s*\?/i);
+  const eqMatch = c.match(/([`a-zA-Z0-9_.]+)\s*=\s*\?/i);
   if (eqMatch) {
     const col = cleanIdentifier(eqMatch[1]);
     const targetVal = params.find(p => p !== undefined);
@@ -268,18 +379,11 @@ function matchesCondition(row, clause, params) {
   }
 
   // col != ?
-  const neqMatch = c.match(/([`a-zA-Z0-9_]+)\s*!=\s*\?/i);
+  const neqMatch = c.match(/([`a-zA-Z0-9_.]+)\s*!=\s*\?/i);
   if (neqMatch) {
     const col = cleanIdentifier(neqMatch[1]);
     const targetVal = params.find(p => p !== undefined);
     return String(row[col] || '') !== String(targetVal || '');
-  }
-
-  // col = TRUE
-  const trueMatch = c.match(/([`a-zA-Z0-9_]+)\s*=\s*true/i);
-  if (trueMatch) {
-    const col = cleanIdentifier(trueMatch[1]);
-    return row[col] === true || row[col] === 1 || row[col] === '1';
   }
 
   return true;
