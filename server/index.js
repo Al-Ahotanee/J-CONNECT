@@ -75,8 +75,9 @@ app.listen(PORT, async () => {
   
   try {
     await initDatabase();
+    console.log('[Server Startup] Database tables & seed accounts verified.');
   } catch (err) {
-    console.warn('[Server Startup] Auto-migration skipped or pending DB config:', err.message);
+    console.warn('[Server Startup] Auto-migration warning:', err.message);
   }
 });
 

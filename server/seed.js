@@ -19,11 +19,15 @@ export async function initDatabase() {
   console.log('[Seed] Executing schema DDL...');
   const schemaSql = fs.readFileSync(path.join(__dirname, 'schema.sql'), 'utf-8');
   
-  // Split statements by semicolon followed by newline
-  const statements = schemaSql
-    .split(/;\s*[\r\n]+/)
+  // Strip multi-line and single-line comments first
+  const cleanSql = schemaSql
+    .replace(/\/\*[\s\S]*?\*\//g, '')
+    .replace(/--.*$/gm, '');
+
+  const statements = cleanSql
+    .split(';')
     .map(s => s.trim())
-    .filter(s => s.length > 0 && !s.startsWith('--'));
+    .filter(s => s.length > 0);
 
   for (const statement of statements) {
     try {
@@ -62,26 +66,41 @@ export async function initDatabase() {
     { email: 'professional@jconnect.gov.ng', name: 'Kabiru Aliyu', role: 'user', type: 'professional', lga: 'Gumel', phone: '08012345614' },
     { email: 'entrepreneur@jconnect.gov.ng', name: 'Rashida Garba', role: 'user', type: 'entrepreneur', lga: 'Hadejia', phone: '08012345615' },
     { email: 'civilservant@jconnect.gov.ng', name: 'Nuhu Danjuma', role: 'user', type: 'civil_servant', lga: 'Dutse', phone: '08012345616' },
+    // Also include the role-based emails from credentials table
+    { email: 'superadmin@jconnect.gov.ng', name: 'Super Administrator', role: 'super_admin', type: 'professional', lga: 'Dutse', phone: '08012345601' },
+    { email: 'ministry@jconnect.gov.ng', name: 'Ministry Admin', role: 'ministry_admin', type: 'civil_servant', lga: 'Dutse', phone: '08012345617' },
+    { email: 'lga.dutse@jconnect.gov.ng', name: 'Dutse LGA Administrator', role: 'lga_admin', type: 'civil_servant', lga: 'Dutse', phone: '08012345618' },
+    { email: 'ward.dutse.central@jconnect.gov.ng', name: 'Dutse Central Ward Officer', role: 'ward_admin', type: 'civil_servant', lga: 'Dutse', ward: 'Central', phone: '08012345619' },
+    { email: 'reviewer@jconnect.gov.ng', name: 'Cadre Reviewer', role: 'cadre_reviewer', type: 'civil_servant', lga: 'Dutse', phone: '08012345620' },
+    { email: 'assessor@jconnect.gov.ng', name: 'CBT Assessor', role: 'cbt_assessor', type: 'professional', lga: 'Dutse', phone: '08012345621' },
+    { email: 'auditor@jconnect.gov.ng', name: 'Audit & Compliance Officer', role: 'audit_compliance', type: 'professional', lga: 'Dutse', phone: '08012345622' },
+    { email: 'hr@jconnect.gov.ng', name: 'General Recruiter HR', role: 'recruiter', type: 'professional', lga: 'Dutse', phone: '08012345623' },
+    { email: 'psb@jconnect.gov.ng', name: 'Public Service Board Recruiter', role: 'psb_recruiter', type: 'civil_servant', lga: 'Dutse', phone: '08012345624' },
+    { email: 'subeb@jconnect.gov.ng', name: 'SUBEB Recruiter', role: 'subeb_recruiter', type: 'civil_servant', lga: 'Dutse', phone: '08012345625' },
+    { email: 'creator@jconnect.gov.ng', name: 'Course Creator', role: 'course_creator', type: 'professional', lga: 'Dutse', phone: '08012345626' },
+    { email: 'partner@company.ng', name: 'Partner Employer', role: 'employer', type: 'employer', lga: 'Dutse', phone: '08012345627' },
+    { email: 'citizen@jconnect.gov.ng', name: 'Citizen Job Seeker', role: 'job_seeker', type: 'job_seeker', lga: 'Dutse', phone: '08012345628' },
+    { email: 'member@jconnect.gov.ng', name: 'Community Member', role: 'community_member', type: 'community_member', lga: 'Dutse', phone: '08012345629' },
   ];
 
   const userIds = {};
 
   for (const u of seedUsers) {
     const userId = uuidv4();
-    userIds[u.email] = userId;
+    userIds[u.email.toLowerCase()] = userId;
 
     await query(
-      'INSERT INTO users (id, email, password_hash) VALUES (?, ?, ?)',
+      'INSERT IGNORE INTO users (id, email, password_hash) VALUES (?, ?, ?)',
       [userId, u.email.toLowerCase(), passwordHash]
     );
 
     await query(
-      'INSERT INTO user_roles (id, user_id, role) VALUES (?, ?, ?)',
+      'INSERT IGNORE INTO user_roles (id, user_id, role) VALUES (?, ?, ?)',
       [uuidv4(), userId, u.role]
     );
 
     await query(
-      `INSERT INTO profiles 
+      `INSERT IGNORE INTO profiles 
        (id, user_id, full_name, email, phone, gender, marital_status, lga, ward, state_of_origin, nationality, employment_status, user_type, profile_completion, approval_status, skills, certifications) 
        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
