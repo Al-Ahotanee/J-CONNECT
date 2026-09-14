@@ -39,8 +39,8 @@ export async function initDatabase() {
   console.log('[Seed] Schema created successfully.');
 
   // Check if users already seeded
-  const [existingUsers] = await pool.query('SELECT COUNT(*) as cnt FROM users');
-  if (existingUsers[0]?.cnt > 0) {
+  const existingUsers = await query('SELECT COUNT(*) as cnt FROM users');
+  if (existingUsers?.[0]?.cnt > 0) {
     console.log(`[Seed] Database already contains ${existingUsers[0].cnt} users. Skipping user seeding.`);
     return;
   }

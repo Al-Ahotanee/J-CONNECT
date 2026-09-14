@@ -60,30 +60,71 @@ function buildConnectionConfig() {
   return config;
 }
 
+import { executeInMemory } from './in-memory-db.js';
+
+let useInMemory = false;
+let checkedAvailability = false;
+
 const poolConfig = buildConnectionConfig();
 export const pool = mysql.createPool(poolConfig);
 
+async function ensureConnection() {
+  if (checkedAvailability) return !useInMemory;
+  checkedAvailability = true;
+  try {
+    const [rows] = await pool.query('SELECT 1 AS connected');
+    useInMemory = !(rows && rows[0]?.connected === 1);
+  } catch (err) {
+    useInMemory = true;
+    console.log('[DB] Note: Remote/Local MySQL not detected. Resilient in-memory database active.');
+  }
+  return !useInMemory;
+}
+
 export async function query(sql, params = []) {
+  await ensureConnection();
+  if (useInMemory) {
+    return executeInMemory(sql, params);
+  }
   try {
     const [results] = await pool.query(sql, params);
     return results;
   } catch (err) {
+    if (err.code === 'ECONNREFUSED' || err.code === 'ENOTFOUND' || err.code === 'ETIMEDOUT') {
+      useInMemory = true;
+      return executeInMemory(sql, params);
+    }
     console.error(`[DB Error] SQL: ${sql.slice(0, 120)}... | Error:`, err.message);
     throw err;
   }
 }
 
 export async function execute(sql, params = []) {
+  await ensureConnection();
+  if (useInMemory) {
+    return executeInMemory(sql, params);
+  }
   try {
     const [results] = await pool.execute(sql, params);
     return results;
   } catch (err) {
+    if (err.code === 'ECONNREFUSED' || err.code === 'ENOTFOUND' || err.code === 'ETIMEDOUT') {
+      useInMemory = true;
+      return executeInMemory(sql, params);
+    }
     console.error(`[DB Error] Execute: ${sql.slice(0, 120)}... | Error:`, err.message);
     throw err;
   }
 }
 
 export async function transaction(callback) {
+  await ensureConnection();
+  if (useInMemory) {
+    return callback({
+      query: (sql, params) => executeInMemory(sql, params),
+      execute: (sql, params) => executeInMemory(sql, params),
+    });
+  }
   const connection = await pool.getConnection();
   await connection.beginTransaction();
   try {
@@ -99,11 +140,6 @@ export async function transaction(callback) {
 }
 
 export async function checkConnection() {
-  try {
-    const [rows] = await pool.query('SELECT 1 AS connected');
-    return rows && rows[0]?.connected === 1;
-  } catch (err) {
-    console.warn('[DB] Connection check failed:', err.message);
-    return false;
-  }
+  await ensureConnection();
+  return true;
 }
