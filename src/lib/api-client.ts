@@ -95,6 +95,32 @@ class QueryBuilder {
     return this;
   }
 
+  gte(column: string, value: any) {
+    this.queryParams[column] = `gte.${value}`;
+    return this;
+  }
+
+  gt(column: string, value: any) {
+    this.queryParams[column] = `gt.${value}`;
+    return this;
+  }
+
+  lte(column: string, value: any) {
+    this.queryParams[column] = `lte.${value}`;
+    return this;
+  }
+
+  lt(column: string, value: any) {
+    this.queryParams[column] = `lt.${value}`;
+    return this;
+  }
+
+  contains(column: string, value: any) {
+    const v = Array.isArray(value) ? `{${value.join(",")}}` : `{${value}}`;
+    this.queryParams[column] = `cs.${v}`;
+    return this;
+  }
+
   or(condition: string) {
     this.queryParams.or = condition;
     return this;
@@ -342,7 +368,8 @@ class StorageClient {
           const headers: Record<string, string> = {};
           if (token) headers["Authorization"] = `Bearer ${token}`;
 
-          const res = await fetch(`/api/upload/${bucket}`, {
+          const reqPath = encodeURIComponent(filePath);
+          const res = await fetch(`/api/upload/${bucket}?path=${reqPath}`, {
             method: "POST",
             headers,
             body: formData,
@@ -435,14 +462,42 @@ export class ApiClient {
     return new RealtimeChannel(channelName);
   }
 
-  async rpc(functionName: string, args?: Record<string, any>) {
-    if (functionName === "has_role") {
-      const { data } = await this.auth.getUser();
-      const userRoles = (data?.user as any)?.roles || [];
-      const roleToCheck = args?._role;
-      return { data: userRoles.includes(roleToCheck) || userRoles.includes("super_admin"), error: null };
+  removeChannel(channel: any) {
+    if (channel && typeof channel.unsubscribe === "function") {
+      channel.unsubscribe();
     }
-    return { data: null, error: null };
+  }
+
+  async rpc(functionName: string, args?: Record<string, any>) {
+    try {
+      const token = localStorage.getItem(TOKEN_KEY);
+      const headers: Record<string, string> = {
+        "Content-Type": "application/json",
+      };
+      if (token) headers["Authorization"] = `Bearer ${token}`;
+
+      const res = await fetch(`/api/rpc/${functionName}`, {
+        method: "POST",
+        headers,
+        body: JSON.stringify(args || {}),
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        return { data, error: null };
+      }
+      const errData = await res.json().catch(() => ({}));
+      throw new Error(errData.error || `RPC ${functionName} failed with status ${res.status}`);
+    } catch (err: any) {
+      // Fallback for local role checks if offline
+      if (functionName === "has_role") {
+        const { data } = await this.auth.getUser();
+        const userRoles = (data?.user as any)?.roles || [];
+        const roleToCheck = args?._role;
+        return { data: userRoles.includes(roleToCheck) || userRoles.includes("super_admin"), error: null };
+      }
+      return { data: null, error: err };
+    }
   }
 }
 

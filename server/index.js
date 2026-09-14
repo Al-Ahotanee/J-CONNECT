@@ -9,6 +9,7 @@ import authRoutes from './routes/auth.js';
 import dataRoutes from './routes/data.js';
 import uploadRoutes from './routes/upload.js';
 import aiRoutes from './routes/ai.js';
+import rpcRoutes from './routes/rpc.js';
 import { initDatabase } from './seed.js';
 
 dotenv.config();
@@ -43,6 +44,7 @@ app.get('/api/health', (req, res) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/data', dataRoutes);
 app.use('/api/upload', uploadRoutes);
+app.use('/api/rpc', rpcRoutes);
 app.use('/api/ai', aiRoutes);
 app.use('/api/admin', aiRoutes);
 

@@ -39,17 +39,17 @@ const DashboardSidebar = () => {
   const isActive = (path: string) => location.pathname === path;
   const highestRole = getHighestRole(roles);
 
-  const isAdmin = hasAnyRole(roles, ["super_admin", "admin"]);
-  const isCitizenDBAdmin = hasAnyRole(roles, ["citizen_db_admin"]);
+  const isAdmin = hasAnyRole(roles, ["super_admin", "admin", "ministry_admin", "audit_compliance"]);
+  const isCitizenDBAdmin = hasAnyRole(roles, ["citizen_db_admin", "cadre_reviewer"]);
   const isMentorshipAdmin = hasAnyRole(roles, ["mentorship_admin"]);
   const isRecruitmentAdmin = hasAnyRole(roles, ["recruitment_admin"]);
-  const isCBTAdmin = hasAnyRole(roles, ["cbt_admin"]);
+  const isCBTAdmin = hasAnyRole(roles, ["cbt_admin", "cbt_assessor"]);
   const isLearningAdmin = hasAnyRole(roles, ["learning_admin"]);
-  const isRecruiter = hasAnyRole(roles, ["recruiter"]);
-  const isInstructor = hasAnyRole(roles, ["instructor"]);
+  const isRecruiter = hasAnyRole(roles, ["recruiter", "psb_recruiter", "subeb_recruiter", "employer"]);
+  const isInstructor = hasAnyRole(roles, ["instructor", "course_creator"]);
   const isMentor = hasAnyRole(roles, ["mentor"]);
-  const isLGAOfficer = hasAnyRole(roles, ["lga_officer"]);
-  const isWardOfficer = hasAnyRole(roles, ["ward_officer"]);
+  const isLGAOfficer = hasAnyRole(roles, ["lga_officer", "lga_admin"]);
+  const isWardOfficer = hasAnyRole(roles, ["ward_officer", "ward_admin"]);
   const isModuleAdmin = isCitizenDBAdmin || isMentorshipAdmin || isRecruitmentAdmin || isCBTAdmin || isLearningAdmin;
   const isStakeholder = isRecruiter || isInstructor || isMentor;
   const isCitizenOnly = !isAdmin && !isModuleAdmin && !isStakeholder && !isLGAOfficer && !isWardOfficer;

@@ -12,14 +12,24 @@ const router = express.Router();
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     const bucket = req.params.bucket || 'general';
-    const uploadDir = path.join(__dirname, '../uploads', bucket);
+    const targetPath = req.query.path ? decodeURIComponent(String(req.query.path)) : '';
+    const dirPart = targetPath ? path.dirname(targetPath) : '';
+    const uploadDir = dirPart && dirPart !== '.'
+      ? path.join(__dirname, '../uploads', bucket, dirPart)
+      : path.join(__dirname, '../uploads', bucket);
     fs.mkdirSync(uploadDir, { recursive: true });
     cb(null, uploadDir);
   },
   filename: (req, file, cb) => {
-    const originalSafe = file.originalname.replace(/[^a-zA-Z0-9.-]/g, '_');
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
-    cb(null, `${uniqueSuffix}-${originalSafe}`);
+    const targetPath = req.query.path ? decodeURIComponent(String(req.query.path)) : '';
+    const baseName = targetPath ? path.basename(targetPath) : '';
+    if (baseName) {
+      cb(null, baseName.replace(/[^a-zA-Z0-9._-]/g, '_'));
+    } else {
+      const originalSafe = file.originalname.replace(/[^a-zA-Z0-9.-]/g, '_');
+      const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+      cb(null, `${uniqueSuffix}-${originalSafe}`);
+    }
   }
 });
 
@@ -35,15 +45,14 @@ router.post('/:bucket', upload.single('file'), (req, res) => {
     }
 
     const bucket = req.params.bucket;
-    const filename = req.file.filename;
-    const protocol = req.protocol;
-    const host = req.get('host');
-    const publicUrl = `${protocol}://${host}/uploads/${bucket}/${filename}`;
+    const targetPath = req.query.path ? decodeURIComponent(String(req.query.path)) : req.file.filename;
+    const cleanPath = targetPath.replace(/\\/g, '/').replace(/^\/+/, '');
+    const publicUrl = `/uploads/${bucket}/${cleanPath}`;
 
     return res.json({
       success: true,
-      key: `${bucket}/${filename}`,
-      path: `${bucket}/${filename}`,
+      key: `${bucket}/${cleanPath}`,
+      path: `${bucket}/${cleanPath}`,
       publicUrl,
       fileName: req.file.originalname,
       size: req.file.size,

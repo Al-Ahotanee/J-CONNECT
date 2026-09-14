@@ -54,16 +54,60 @@ router.get('/:table', optionalAuth, async (req, res) => {
       if (['select', 'order', 'limit', 'offset', 'single'].includes(key)) continue;
 
       if (key === 'or') {
-        // Special handle for direct messages or conditions
-        // Example: or=and(sender_id.eq.A,receiver_id.eq.B),and(sender_id.eq.B,receiver_id.eq.A)
         const orStr = String(rawVal);
-        const match = orStr.match(/and\(sender_id\.eq\.([^,]+),receiver_id\.eq\.([^)]+)\),and\(sender_id\.eq\.([^,]+),receiver_id\.eq\.([^)]+)\)/);
-        if (match) {
-          const [, u1, u2] = match;
-          whereClauses.push('((sender_id = ? AND receiver_id = ?) OR (sender_id = ? AND receiver_id = ?))');
-          params.push(u1, u2, u2, u1);
-          continue;
+        const tokens = [];
+        let cur = '';
+        let depth = 0;
+        for (let i = 0; i < orStr.length; i++) {
+          const char = orStr[i];
+          if (char === '(') depth++;
+          else if (char === ')') depth--;
+          if (char === ',' && depth === 0) {
+            tokens.push(cur.trim());
+            cur = '';
+          } else {
+            cur += char;
+          }
         }
+        if (cur.trim()) tokens.push(cur.trim());
+
+        const orSubClauses = [];
+        for (const token of tokens) {
+          if (token.startsWith('and(') && token.endsWith(')')) {
+            const inner = token.slice(4, -1);
+            const innerTokens = inner.split(',').map(s => s.trim());
+            const andClauses = [];
+            for (const it of innerTokens) {
+              const parts = it.split('.');
+              if (parts.length >= 3) {
+                const c = parts[0].replace(/[^a-zA-Z0-9_]/g, '');
+                const op = parts[1];
+                const v = parts.slice(2).join('.');
+                if (op === 'eq') { andClauses.push(`\`${c}\` = ?`); params.push(v); }
+                else if (op === 'neq') { andClauses.push(`\`${c}\` != ?`); params.push(v); }
+                else if (op === 'like' || op === 'ilike') { andClauses.push(`\`${c}\` LIKE ?`); params.push(v); }
+                else if (op === 'cs') { andClauses.push(`JSON_CONTAINS(\`${c}\`, JSON_QUOTE(?))`); params.push(v.replace(/^\{|\}$/g, '')); }
+              }
+            }
+            if (andClauses.length > 0) orSubClauses.push(`(${andClauses.join(' AND ')})`);
+          } else {
+            const parts = token.split('.');
+            if (parts.length >= 3) {
+              const c = parts[0].replace(/[^a-zA-Z0-9_]/g, '');
+              const op = parts[1];
+              const v = parts.slice(2).join('.');
+              if (op === 'eq') { orSubClauses.push(`\`${c}\` = ?`); params.push(v); }
+              else if (op === 'neq') { orSubClauses.push(`\`${c}\` != ?`); params.push(v); }
+              else if (op === 'like' || op === 'ilike') { orSubClauses.push(`\`${c}\` LIKE ?`); params.push(v); }
+              else if (op === 'cs') { orSubClauses.push(`JSON_CONTAINS(\`${c}\`, JSON_QUOTE(?))`); params.push(v.replace(/^\{|\}$/g, '')); }
+              else if (op === 'is') { orSubClauses.push(`\`${c}\` IS NULL`); }
+            }
+          }
+        }
+        if (orSubClauses.length > 0) {
+          whereClauses.push(`(${orSubClauses.join(' OR ')})`);
+        }
+        continue;
       }
 
       const val = String(rawVal);
@@ -86,6 +130,10 @@ router.get('/:table', optionalAuth, async (req, res) => {
         const pattern = val.replace(/^(like|ilike)\./, '');
         whereClauses.push(`\`${key}\` LIKE ?`);
         params.push(pattern);
+      } else if (val.startsWith('cs.')) {
+        const csVal = val.slice(3).replace(/^\{|\}$/g, '');
+        whereClauses.push(`JSON_CONTAINS(\`${key}\`, JSON_QUOTE(?))`);
+        params.push(csVal);
       } else if (val.startsWith('in.')) {
         const inVals = val.slice(3).replace(/^\(|\)$/g, '').split(',').map(s => s.trim());
         if (inVals.length > 0) {
@@ -93,6 +141,18 @@ router.get('/:table', optionalAuth, async (req, res) => {
           whereClauses.push(`\`${key}\` IN (${placeholders})`);
           params.push(...inVals);
         }
+      } else if (val.startsWith('gte.')) {
+        whereClauses.push(`\`${key}\` >= ?`);
+        params.push(val.slice(4));
+      } else if (val.startsWith('gt.')) {
+        whereClauses.push(`\`${key}\` > ?`);
+        params.push(val.slice(3));
+      } else if (val.startsWith('lte.')) {
+        whereClauses.push(`\`${key}\` <= ?`);
+        params.push(val.slice(4));
+      } else if (val.startsWith('lt.')) {
+        whereClauses.push(`\`${key}\` < ?`);
+        params.push(val.slice(3));
       } else if (val.startsWith('is.')) {
         const isVal = val.slice(3).toLowerCase();
         if (isVal === 'null') whereClauses.push(`\`${key}\` IS NULL`);

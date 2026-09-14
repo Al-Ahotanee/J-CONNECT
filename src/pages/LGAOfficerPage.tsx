@@ -41,7 +41,7 @@ const LGAOfficerPage = () => {
     enabled: !!user,
   });
 
-  const isLGA = hasAnyRole(roles, ["super_admin", "admin", "citizen_db_admin", "lga_officer"]);
+  const isLGA = hasAnyRole(roles, ["super_admin", "admin", "ministry_admin", "citizen_db_admin", "lga_admin", "lga_officer"]);
   const officerLGA = myProfile?.lga || "";
 
   const { data: profiles } = useQuery({

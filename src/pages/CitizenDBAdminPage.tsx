@@ -66,7 +66,7 @@ const CitizenDBAdminPage = () => {
     enabled: !!user,
   });
 
-  const isAllowed = hasAnyRole(roles, ["super_admin", "admin", "citizen_db_admin"]);
+  const isAllowed = hasAnyRole(roles, ["super_admin", "admin", "ministry_admin", "citizen_db_admin", "cadre_reviewer", "lga_admin", "lga_officer"]);
 
   const { data: profiles, isLoading } = useQuery({
     queryKey: ["citizenProfiles", { search, lga, gender, employmentStatus, sector, qualification, senatorialZone, ageMin, ageMax }],

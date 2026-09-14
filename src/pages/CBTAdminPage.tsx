@@ -66,7 +66,7 @@ const CBTAdminPage = () => {
     enabled: !!user,
   });
 
-  const isAllowed = hasAnyRole(roles, ["super_admin", "admin", "cbt_admin"]);
+  const isAllowed = hasAnyRole(roles, ["super_admin", "admin", "cbt_admin", "cbt_assessor", "recruitment_admin"]);
 
   // Fetch all quizzes (question bank containers)
   const { data: allQuizzes } = useQuery({

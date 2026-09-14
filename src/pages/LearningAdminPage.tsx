@@ -44,7 +44,7 @@ const LearningAdminPage = () => {
     enabled: !!user,
   });
 
-  const isAuthorized = hasAnyRole(roles, ["super_admin", "admin", "learning_admin"]);
+  const isAuthorized = hasAnyRole(roles, ["super_admin", "admin", "ministry_admin", "learning_admin", "course_creator"]);
 
   const { data: courses, isLoading } = useQuery({
     queryKey: ["adminCourses"],

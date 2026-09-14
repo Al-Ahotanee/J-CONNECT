@@ -3,6 +3,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { Navigate } from "react-router-dom";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { fetchRecruiterJobs, updateApplicationStatus, fetchUserRoles } from "@/lib/api";
+import { hasAnyRole } from "@/lib/roles";
 import { createInternalJob, createInterviewInvitation, createJobOffer, fetchJobApplicationsWithProfiles } from "@/lib/recruitment-api";
 import { supabase } from "@/integrations/supabase/client";
 import { useVideoMeeting } from "@/hooks/useVideoMeeting";
@@ -126,7 +127,7 @@ const RecruiterPage = () => {
   ]);
 
   const { data: roles } = useQuery({ queryKey: ["userRoles", user?.id], queryFn: () => fetchUserRoles(user!.id), enabled: !!user });
-  const isRecruiterOrAdmin = roles?.includes("recruiter") || roles?.includes("admin") || roles?.includes("super_admin");
+  const isRecruiterOrAdmin = hasAnyRole(roles || [], ["super_admin", "admin", "recruitment_admin", "recruiter", "psb_recruiter", "subeb_recruiter", "employer"]);
   const { data: jobs } = useQuery({ queryKey: ["recruiterJobs", user?.id], queryFn: () => fetchRecruiterJobs(user!.id), enabled: !!user && !!isRecruiterOrAdmin });
   const { data: applications } = useQuery({
     queryKey: ["jobApplicationsWithProfiles", selectedJobId],

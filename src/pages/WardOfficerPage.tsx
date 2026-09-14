@@ -37,7 +37,7 @@ const WardOfficerPage = () => {
     enabled: !!user,
   });
 
-  const isWard = hasAnyRole(roles, ["super_admin", "admin", "citizen_db_admin", "ward_officer"]);
+  const isWard = hasAnyRole(roles, ["super_admin", "admin", "ministry_admin", "citizen_db_admin", "lga_admin", "lga_officer", "ward_admin", "ward_officer"]);
   const officerWard = myProfile?.ward || "";
   const officerLGA = myProfile?.lga || "";
 
