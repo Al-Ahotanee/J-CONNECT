@@ -45,7 +45,9 @@ const RecruitmentAdminPage = () => {
     enabled: !!user,
   });
 
-  const isAllowed = hasAnyRole(roles, ["super_admin", "admin", "recruitment_admin"]);
+  const isAllowed = hasAnyRole(roles, [
+    "super_admin", "admin", "ministry_admin", "recruitment_admin", "psb_recruiter", "subeb_recruiter"
+  ]);
 
   const { data: stats } = useQuery({
     queryKey: ["recruitmentStats"],

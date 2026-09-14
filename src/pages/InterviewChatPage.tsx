@@ -45,16 +45,19 @@ const InterviewChatPage = () => {
     enabled: !!otherId,
   });
 
-  // Fetch initial messages
-  useEffect(() => {
+  // Fetch initial messages & polling
+  const fetchMessages = async () => {
     if (!user || !otherId) return;
-    const fetchMessages = async () => {
-      const { data } = await supabase.from("messages").select("*")
-        .or(`and(sender_id.eq.${user.id},receiver_id.eq.${otherId}),and(sender_id.eq.${otherId},receiver_id.eq.${user.id})`)
-        .order("created_at", { ascending: true });
-      if (data) setMessages(data as ChatMessage[]);
-    };
+    const { data } = await supabase.from("messages").select("*")
+      .or(`and(sender_id.eq.${user.id},receiver_id.eq.${otherId}),and(sender_id.eq.${otherId},receiver_id.eq.${user.id})`)
+      .order("created_at", { ascending: true });
+    if (data) setMessages(data as ChatMessage[]);
+  };
+
+  useEffect(() => {
     fetchMessages();
+    const interval = setInterval(fetchMessages, 4000);
+    return () => clearInterval(interval);
   }, [user, otherId]);
 
   // Realtime subscription
@@ -112,13 +115,27 @@ const InterviewChatPage = () => {
 
   const handleSend = async () => {
     if (!message.trim()) return;
+    const text = message.trim();
+    setMessage("");
     setSending(true);
     try {
-      await supabase.from("messages").insert({
-        sender_id: user.id, receiver_id: otherId, content: message.trim(),
+      const { data, error } = await supabase.from("messages").insert({
+        sender_id: user.id, receiver_id: otherId, content: text,
       });
-      setMessage("");
-    } catch (err: any) { toast.error("Failed to send"); }
+      if (error) throw error;
+      const optimisticMsg: ChatMessage = {
+        id: (data as any)?.[0]?.id || `tmp-${Date.now()}`,
+        sender_id: user.id,
+        receiver_id: otherId,
+        content: text,
+        created_at: new Date().toISOString(),
+        is_read: false,
+      };
+      setMessages(prev => [...prev, optimisticMsg]);
+    } catch (err: any) { 
+      toast.error("Failed to send message"); 
+      setMessage(text);
+    }
     setSending(false);
   };
 
@@ -136,12 +153,23 @@ const InterviewChatPage = () => {
 
       const { data: urlData } = supabase.storage.from("chat-files").getPublicUrl(path);
 
-      await supabase.from("messages").insert({
+      const { data: inserted } = await supabase.from("messages").insert({
         sender_id: user.id, receiver_id: otherId,
         content: `📎 ${file.name}`,
         file_url: urlData.publicUrl,
         file_name: file.name,
       });
+      const newMsg: ChatMessage = {
+        id: (inserted as any)?.[0]?.id || `tmp-${Date.now()}`,
+        sender_id: user.id,
+        receiver_id: otherId,
+        content: `📎 ${file.name}`,
+        file_url: urlData.publicUrl,
+        file_name: file.name,
+        created_at: new Date().toISOString(),
+        is_read: false,
+      };
+      setMessages(prev => [...prev, newMsg]);
       toast.success("File sent!");
     } catch (err: any) { toast.error(err.message || "Upload failed"); }
     setUploading(false);

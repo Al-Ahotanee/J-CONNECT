@@ -72,8 +72,8 @@ const CVGeneratorPage = () => {
       });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
-      setCvData(data.cv);
-      setCvProfile(data.profile);
+      setCvData(data.cv || data);
+      setCvProfile(data.profile || profile);
       toast.success("CV generated successfully!");
     } catch (e: any) {
       toast.error(e.message || "Failed to generate CV");

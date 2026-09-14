@@ -3,7 +3,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { Navigate } from "react-router-dom";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { fetchUserRoles } from "@/lib/api";
-import { hasAnyRole } from "@/lib/roles";
+import { hasAnyRole, canAccessAdmin } from "@/lib/roles";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -35,7 +35,7 @@ const CommunityPage = () => {
     enabled: !!user,
   });
 
-  const isAdmin = hasAnyRole(roles, ["super_admin", "admin", "citizen_db_admin", "mentorship_admin", "recruitment_admin", "cbt_admin", "learning_admin"]);
+  const isAdmin = canAccessAdmin(roles);
 
   // Posts with profiles
   const { data: posts = [], isLoading: postsLoading } = useQuery({

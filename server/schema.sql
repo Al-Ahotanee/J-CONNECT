@@ -394,6 +394,10 @@ CREATE TABLE IF NOT EXISTS quiz_questions (
   INDEX idx_qq_quiz (quiz_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+CREATE OR REPLACE VIEW quiz_questions_public AS
+SELECT id, quiz_id, question, options, order_index, created_at
+FROM quiz_questions;
+
 CREATE TABLE IF NOT EXISTS quiz_attempts (
   id VARCHAR(36) PRIMARY KEY,
   quiz_id VARCHAR(36) NOT NULL,

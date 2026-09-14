@@ -112,7 +112,17 @@ Return ONLY valid JSON with structure:
           const text = aiData.candidates?.[0]?.content?.parts?.[0]?.text;
           if (text) {
             const parsed = JSON.parse(text);
-            return res.json(parsed);
+            return res.json({
+              cv: parsed,
+              profile: {
+                full_name: profile.full_name,
+                email: profile.email,
+                phone: profile.phone,
+                lga: profile.lga,
+                job_title: profile.job_title || target_role,
+                residential_address: profile.residential_address,
+              }
+            });
           }
         }
       } catch (aiErr) {
@@ -157,7 +167,17 @@ Return ONLY valid JSON with structure:
       certifications: certsList.length > 0 ? certsList : ['State Human Capital Development Certification']
     };
 
-    return res.json(fallbackCV);
+    return res.json({
+      cv: fallbackCV,
+      profile: {
+        full_name: profile.full_name,
+        email: profile.email,
+        phone: profile.phone,
+        lga: profile.lga,
+        job_title: profile.job_title || target_role,
+        residential_address: profile.residential_address,
+      }
+    });
   } catch (err) {
     console.error('[Generate CV Error]:', err);
     return res.status(500).json({ error: err.message });
@@ -234,25 +254,60 @@ router.post('/smart-job-match', requireAuth, async (req, res) => {
 // ==========================================
 router.post('/ai-interview-coach', optionalAuth, async (req, res) => {
   try {
-    const { messages = [], mode = 'practice', jobTitle = 'Professional' } = req.body;
+    const { messages = [], mode = 'practice' } = req.body;
+    const jobTitle = req.body.jobTitle || req.body.job_title || 'Professional';
     const lastUserMsg = messages.filter(m => m.role === 'user').pop()?.content || '';
 
     let reply = '';
+    const apiKey = process.env.GEMINI_API_KEY || process.env.OPENAI_API_KEY;
 
-    if (mode === 'tips') {
-      reply = `Here are 3 key strategies for succeeding in a ${jobTitle} interview in Jigawa State:
+    if (apiKey && lastUserMsg) {
+      try {
+        const sysPrompt = mode === 'tips' 
+          ? `You are an expert interview coach for candidates in Nigeria (specifically Jigawa State). Provide 3-4 structured, actionable tips for succeeding in a ${jobTitle} interview.`
+          : `You are a professional HR interviewer conducting a realistic mock interview for a ${jobTitle} position in Nigeria/Jigawa State. 
+Provide constructive, concise feedback on their previous answer, followed by your next thoughtful interview question.`;
+
+        const conversationHistory = messages.slice(-6).map(m => `${m.role === 'user' ? 'Candidate' : 'Interviewer'}: ${m.content}`).join('\n');
+        const prompt = `${sysPrompt}\n\nRecent Conversation:\n${conversationHistory}\n\nCandidate's latest response:\n"${lastUserMsg}"\n\nYour response:`;
+
+        const aiResponse = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contents: [{ parts: [{ text: prompt }] }],
+            generationConfig: { maxOutputTokens: 500, temperature: 0.7 }
+          })
+        });
+
+        if (aiResponse.ok) {
+          const aiData = await aiResponse.json();
+          const text = aiData.candidates?.[0]?.content?.parts?.[0]?.text;
+          if (text) {
+            reply = text;
+          }
+        }
+      } catch (aiErr) {
+        console.warn('[AI Coach LLM Fallback]:', aiErr.message);
+      }
+    }
+
+    if (!reply) {
+      if (mode === 'tips') {
+        reply = `Here are 3 key strategies for succeeding in a ${jobTitle} interview in Jigawa State:
 1. **STAR Method**: Structure your answers with Situation, Task, Action, and Result.
 2. **Contextual Awareness**: Highlight how your skills directly solve local community or ministry challenges.
 3. **Prepared Inquiries**: Always ask 1-2 thoughtful questions about organizational growth and team workflow.`;
-    } else if (mode === 'practice') {
-      reply = `Thank you for sharing that. You demonstrated clear ownership of the problem!
+      } else if (mode === 'practice') {
+        reply = `Thank you for sharing that. You demonstrated clear ownership of the problem!
 
 Here is your next mock interview question for the **${jobTitle}** position:
 *"Can you describe a time when you had to work under high pressure with limited resources, and how you ensured the project was delivered on time?"*
 
 Take your time to structure your response using the STAR approach.`;
-    } else {
-      reply = `I am your J-Connect Career Coach. How can I assist your preparation for the ${jobTitle} role today? We can practice behavioral questions, review technical topics, or polish your elevator pitch.`;
+      } else {
+        reply = `I am your J-Connect Career Coach. How can I assist your preparation for the ${jobTitle} role today? We can practice behavioral questions, review technical topics, or polish your elevator pitch.`;
+      }
     }
 
     // Format as SSE streaming response for AIInterviewCoachPage

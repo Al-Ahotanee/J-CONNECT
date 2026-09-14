@@ -22,7 +22,10 @@ const RecruitmentAnalyticsPage = () => {
     enabled: !!user,
   });
 
-  const isAllowed = hasAnyRole(roles, ["super_admin", "admin", "recruitment_admin"]);
+  const isAllowed = hasAnyRole(roles, [
+    "super_admin", "admin", "ministry_admin", "recruitment_admin", 
+    "recruiter", "psb_recruiter", "subeb_recruiter", "employer", "audit_compliance"
+  ]);
 
   const { data: analytics, isLoading } = useQuery({
     queryKey: ["recruitmentAnalytics"],

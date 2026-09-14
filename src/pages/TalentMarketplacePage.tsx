@@ -37,7 +37,7 @@ const TalentMarketplacePage = () => {
     enabled: !!user,
   });
 
-  const isAllowed = hasAnyRole(roles, ["super_admin", "admin", "recruitment_admin", "recruiter"]);
+  const isAllowed = hasAnyRole(roles, ["super_admin", "admin", "recruitment_admin", "recruiter", "psb_recruiter", "subeb_recruiter", "employer"]);
 
   const { data: candidates, isLoading } = useQuery({
     queryKey: ["talentPool", search, sectorFilter, lgaFilter, qualFilter, statusFilter],

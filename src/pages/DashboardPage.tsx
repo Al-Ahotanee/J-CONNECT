@@ -454,14 +454,14 @@ const DashboardPage = () => {
   if (!user) return <Navigate to="/login" />;
 
   // Route to role-specific dashboards
-  if (hasAnyRole(roles, ["super_admin", "admin"])) return <SuperAdminDashboard user={user} roles={roles} />;
-  if (hasAnyRole(roles, ["citizen_db_admin"])) return <CitizenDBAdminDashboard user={user} />;
+  if (hasAnyRole(roles, ["super_admin", "admin", "ministry_admin", "audit_compliance"])) return <SuperAdminDashboard user={user} roles={roles} />;
+  if (hasAnyRole(roles, ["citizen_db_admin", "cadre_reviewer"])) return <CitizenDBAdminDashboard user={user} />;
   if (hasAnyRole(roles, ["mentorship_admin"])) return <MentorshipAdminDashboard user={user} />;
   if (hasAnyRole(roles, ["recruitment_admin"])) return <RecruitmentAdminDashboard user={user} />;
-  if (hasAnyRole(roles, ["cbt_admin", "learning_admin"])) return <ModuleAdminDashboard user={user} roles={roles} />;
-  if (hasAnyRole(roles, ["recruiter"])) return <RecruiterDashboardView user={user} />;
-  if (hasAnyRole(roles, ["lga_officer"])) return <Navigate to="/lga-officer" />;
-  if (hasAnyRole(roles, ["ward_officer"])) return <Navigate to="/ward-officer" />;
+  if (hasAnyRole(roles, ["cbt_admin", "learning_admin", "cbt_assessor", "course_creator"])) return <ModuleAdminDashboard user={user} roles={roles} />;
+  if (hasAnyRole(roles, ["recruiter", "psb_recruiter", "subeb_recruiter", "employer"])) return <RecruiterDashboardView user={user} />;
+  if (hasAnyRole(roles, ["lga_admin", "lga_officer"])) return <Navigate to="/lga-officer" />;
+  if (hasAnyRole(roles, ["ward_admin", "ward_officer"])) return <Navigate to="/ward-officer" />;
 
   return <CitizenDashboard user={user} />;
 };

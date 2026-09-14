@@ -12,13 +12,148 @@ const ALLOWED_TABLES = new Set([
   'mentorship_mappings', 'mentorship_sessions', 'mentorship_goals',
   'mentorship_listings', 'mentorship_requests', 'mentor_ratings', 'courses',
   'lessons', 'course_materials', 'enrollments', 'lesson_completions',
-  'certificates', 'quizzes', 'quiz_questions', 'quiz_attempts',
+  'certificates', 'quizzes', 'quiz_questions', 'quiz_questions_public', 'quiz_attempts',
   'discussion_posts', 'group_chatrooms', 'chatroom_members', 'chatroom_messages',
   'messages', 'notifications', 'announcements', 'video_meetings',
   'skill_endorsements', 'portfolio_items', 'social_posts', 'social_reactions',
   'social_comments', 'social_groups', 'social_group_members', 'social_follows',
   'activity_feed', 'approval_workflows', 'audit_logs', 'branding_settings'
 ]);
+
+const RELATION_MAP = {
+  profiles: {
+    education: { table: 'education', foreignKey: 'user_id', localKey: 'user_id', isArray: true },
+    user_roles: { table: 'user_roles', foreignKey: 'user_id', localKey: 'user_id', isArray: true },
+  },
+  enrollments: {
+    courses: { table: 'courses', foreignKey: 'id', localKey: 'course_id', isArray: false },
+    profiles: { table: 'profiles', foreignKey: 'user_id', localKey: 'user_id', isArray: false },
+  },
+  certificates: {
+    courses: { table: 'courses', foreignKey: 'id', localKey: 'course_id', isArray: false },
+    profiles: { table: 'profiles', foreignKey: 'user_id', localKey: 'user_id', isArray: false },
+  },
+  quiz_attempts: {
+    quizzes: { table: 'quizzes', foreignKey: 'id', localKey: 'quiz_id', isArray: false },
+    profiles: { table: 'profiles', foreignKey: 'user_id', localKey: 'user_id', isArray: false },
+  },
+  quizzes: {
+    quiz_questions: { table: 'quiz_questions', foreignKey: 'quiz_id', localKey: 'id', isArray: true },
+    courses: { table: 'courses', foreignKey: 'id', localKey: 'course_id', isArray: false },
+    jobs: { table: 'jobs', foreignKey: 'id', localKey: 'job_id', isArray: false },
+  },
+  quiz_questions: {
+    quizzes: { table: 'quizzes', foreignKey: 'id', localKey: 'quiz_id', isArray: false },
+  },
+  mentorship_mappings: {
+    mentors: { table: 'mentors', foreignKey: 'id', localKey: 'mentor_id', isArray: false },
+    mentee: { table: 'profiles', foreignKey: 'user_id', localKey: 'mentee_id', isArray: false },
+    profiles: { table: 'profiles', foreignKey: 'user_id', localKey: 'mentee_id', isArray: false },
+  },
+  mentors: {
+    profiles: { table: 'profiles', foreignKey: 'user_id', localKey: 'user_id', isArray: false },
+  },
+  skill_endorsements: {
+    endorser: { table: 'profiles', foreignKey: 'user_id', localKey: 'endorser_id', isArray: false },
+    profiles: { table: 'profiles', foreignKey: 'user_id', localKey: 'user_id', isArray: false },
+  },
+  job_applications: {
+    jobs: { table: 'jobs', foreignKey: 'id', localKey: 'job_id', isArray: false },
+    profiles: { table: 'profiles', foreignKey: 'user_id', localKey: 'user_id', isArray: false },
+  },
+  jobs: {
+    applications: { table: 'job_applications', foreignKey: 'job_id', localKey: 'id', isArray: true },
+    profiles: { table: 'profiles', foreignKey: 'user_id', localKey: 'posted_by', isArray: false },
+  },
+  saved_candidates: {
+    profiles: { table: 'profiles', foreignKey: 'user_id', localKey: 'candidate_id', isArray: false },
+  }
+};
+
+async function resolveRelations(parentTable, rows, selectStr) {
+  if (!selectStr || !rows || rows.length === 0) return rows;
+  
+  const relRegex = /(?:([a-zA-Z0-9_]+):)?([a-zA-Z0-9_]+)\(([^)]*)\)/g;
+  let match;
+  while ((match = relRegex.exec(selectStr)) !== null) {
+    const alias = match[1];
+    const relName = match[2];
+    const requestedCols = match[3].trim();
+    
+    let config = null;
+    let propName = alias || relName;
+
+    if (alias && relName.endsWith('_id')) {
+      config = {
+        table: 'profiles',
+        foreignKey: 'user_id',
+        localKey: relName,
+        isArray: false
+      };
+    } else if (RELATION_MAP[parentTable] && RELATION_MAP[parentTable][relName]) {
+      config = RELATION_MAP[parentTable][relName];
+    }
+
+    if (!config) continue;
+
+    const { table: targetTable, foreignKey, localKey, isArray } = config;
+    const keys = [...new Set(rows.map(r => r[localKey]).filter(v => v !== null && v !== undefined && v !== ''))];
+    
+    if (keys.length === 0) {
+      for (const row of rows) {
+        row[propName] = isArray ? [] : null;
+      }
+      continue;
+    }
+
+    let selectCols = '*';
+    if (requestedCols && requestedCols !== '*') {
+      const cols = requestedCols.split(',').map(c => c.trim()).filter(Boolean);
+      if (!cols.includes(foreignKey) && !cols.includes('*')) {
+        cols.push(foreignKey);
+      }
+      selectCols = cols.map(c => `\`${c.replace(/[^a-zA-Z0-9_]/g, '')}\``).join(', ');
+    }
+
+    const placeholders = keys.map(() => '?').join(', ');
+    try {
+      const relRows = await query(
+        `SELECT ${selectCols} FROM \`${targetTable}\` WHERE \`${foreignKey}\` IN (${placeholders})`,
+        keys
+      );
+      const parsedRelRows = (relRows || []).map(parseJsonColumns);
+
+      if (isArray) {
+        const groupMap = new Map();
+        for (const item of parsedRelRows) {
+          const k = String(item[foreignKey]);
+          if (!groupMap.has(k)) groupMap.set(k, []);
+          groupMap.get(k).push(item);
+        }
+        for (const row of rows) {
+          const k = String(row[localKey]);
+          row[propName] = groupMap.get(k) || [];
+        }
+      } else {
+        const singleMap = new Map();
+        for (const item of parsedRelRows) {
+          singleMap.set(String(item[foreignKey]), item);
+        }
+        for (const row of rows) {
+          const k = String(row[localKey]);
+          row[propName] = singleMap.get(k) || null;
+        }
+      }
+    } catch (relErr) {
+      console.warn(`[ResolveRelation Warning] Failed to join ${targetTable} on ${parentTable}:`, relErr.message);
+      for (const row of rows) {
+        row[propName] = isArray ? [] : null;
+      }
+    }
+  }
+
+  return rows;
+}
 
 function parseJsonColumns(row) {
   if (!row) return row;
@@ -45,7 +180,9 @@ router.get('/:table', optionalAuth, async (req, res) => {
       return res.status(400).json({ error: `Table '${table}' is not recognized or not allowed.` });
     }
 
-    let sql = `SELECT * FROM \`${table}\``;
+    let sql = table === 'quiz_questions_public'
+      ? 'SELECT id, quiz_id, question, options, order_index, created_at FROM `quiz_questions`'
+      : `SELECT * FROM \`${table}\``;
     const whereClauses = [];
     const params = [];
 
@@ -192,6 +329,9 @@ router.get('/:table', optionalAuth, async (req, res) => {
 
     const rows = await query(sql, params);
     const parsedRows = (rows || []).map(parseJsonColumns);
+
+    // Resolve embedded / joined resources requested in select
+    await resolveRelations(table, parsedRows, req.query.select);
 
     if (req.query.single === 'true') {
       if (parsedRows.length === 0) {

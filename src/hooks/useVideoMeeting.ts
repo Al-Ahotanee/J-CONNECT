@@ -15,6 +15,7 @@ export const useVideoMeeting = (userId: string | undefined) => {
     scheduledAt?: string;
   }) => {
     if (!userId) return;
+    const isScheduled = !!opts.scheduledAt && new Date(opts.scheduledAt).getTime() > Date.now();
     const roomName = `jconnect-${opts.meetingType}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
     
     try {
@@ -26,12 +27,16 @@ export const useVideoMeeting = (userId: string | undefined) => {
         related_id: opts.relatedId || null,
         participants: opts.participants || [userId],
         scheduled_at: opts.scheduledAt || new Date().toISOString(),
-        status: "active",
+        status: isScheduled ? "scheduled" : "active",
       } as any);
       
-      setMeetingRoom(roomName);
-      setMeetingTitle(opts.title);
-      setMeetingOpen(true);
+      if (!isScheduled) {
+        setMeetingRoom(roomName);
+        setMeetingTitle(opts.title);
+        setMeetingOpen(true);
+      } else {
+        toast.success("Meeting scheduled successfully!");
+      }
     } catch (err: any) {
       toast.error(err.message || "Failed to start meeting");
     }

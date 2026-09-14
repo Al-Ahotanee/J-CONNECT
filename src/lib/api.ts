@@ -330,7 +330,12 @@ export const globalSearch = async (query: string) => {
     const userIds = mentorData.map(m => m.user_id);
     const { data: mentorProfiles } = await supabase.from("profiles").select("user_id, full_name").in("user_id", userIds);
     const profileMap = new Map((mentorProfiles || []).map(p => [p.user_id, p]));
-    mentorsWithProfiles = mentorData.map(m => ({ ...m, profiles: profileMap.get(m.user_id) || null }));
+    mentorsWithProfiles = mentorData
+      .map(m => ({ ...m, profiles: profileMap.get(m.user_id) || null }))
+      .filter(m => 
+        m.category?.toLowerCase().includes(query.toLowerCase()) || 
+        m.profiles?.full_name?.toLowerCase().includes(query.toLowerCase())
+      );
   }
 
   return {

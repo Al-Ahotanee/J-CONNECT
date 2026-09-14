@@ -44,7 +44,7 @@ router.post('/verify_certificate', optionalAuth, async (req, res) => {
     const enrollmentSql = `
       SELECT 
         e.id,
-        e.completed_at as issued_at,
+        COALESCE(e.completed_at, e.enrolled_at) as issued_at,
         p.full_name as holder_name,
         co.title as course_title,
         co.category as course_category,
@@ -52,10 +52,23 @@ router.post('/verify_certificate', optionalAuth, async (req, res) => {
       FROM enrollments e
       JOIN profiles p ON e.user_id = p.user_id
       JOIN courses co ON e.course_id = co.id
-      WHERE e.completed = TRUE AND (c.certificate_number = ? OR CONCAT('JCON-', UPPER(SUBSTRING(e.id, 1, 8))) = ?)
+      WHERE e.completed = TRUE AND CONCAT('JCON-', UPPER(SUBSTRING(e.id, 1, 8))) = ?
       LIMIT 1
     `;
     
+    const fallbackRows = await query(enrollmentSql, [certNumber]);
+    if (fallbackRows && fallbackRows.length > 0) {
+      return res.json([{
+        certificate_number: certNumber,
+        issued_at: fallbackRows[0].issued_at,
+        status: 'valid',
+        holder_name: fallbackRows[0].holder_name,
+        course_title: fallbackRows[0].course_title,
+        course_category: fallbackRows[0].course_category,
+        course_level: fallbackRows[0].course_level
+      }]);
+    }
+
     return res.json([]);
   } catch (err) {
     console.error('[RPC verify_certificate Error]:', err);

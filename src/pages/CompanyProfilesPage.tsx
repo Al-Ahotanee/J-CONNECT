@@ -36,7 +36,7 @@ const CompanyProfilesPage = () => {
     enabled: !!user,
   });
 
-  const isRecruiter = hasAnyRole(roles, ["super_admin", "admin", "recruitment_admin", "recruiter"]);
+  const isRecruiter = hasAnyRole(roles, ["super_admin", "admin", "recruitment_admin", "recruiter", "psb_recruiter", "subeb_recruiter", "employer"]);
 
   const { data: companies } = useQuery({
     queryKey: ["companyProfiles"],

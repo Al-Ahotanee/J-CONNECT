@@ -159,9 +159,18 @@ const MentorshipMarketplacePage = () => {
           const menteeUserId = req.request_type === "mentee_to_mentor" ? req.from_user_id : req.to_user_id;
           // Find mentor record
           const { data: mentorRecord } = await supabase.from("mentors").select("id").eq("user_id", mentorUserId).single();
-          if (mentorRecord) {
+          let mentorId = mentorRecord?.id;
+          if (!mentorId) {
+            const { data: newMentor } = await supabase.from("mentors").insert({
+              user_id: mentorUserId,
+              category: "General Mentorship",
+              is_active: true,
+            }).select().single();
+            mentorId = (newMentor as any)?.id;
+          }
+          if (mentorId) {
             await supabase.from("mentorship_mappings").insert({
-              mentor_id: mentorRecord.id,
+              mentor_id: mentorId,
               mentee_id: menteeUserId,
               match_reason: "Marketplace request accepted",
             });
