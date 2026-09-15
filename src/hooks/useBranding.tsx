@@ -22,7 +22,7 @@ export interface BrandingSettings {
 const DEFAULT_BRANDING: BrandingSettings = {
   id: "",
   system_name: "J-Connect",
-  tagline: "Jigawa State's unified platform for human capital development",
+  tagline: "CONNECT. LEARN. GROW.",
   logo_url: null,
   favicon_url: null,
   primary_color: "142 72% 29%",

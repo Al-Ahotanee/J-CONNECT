@@ -1222,7 +1222,7 @@ async function runLiveUAT() {
       token: superAdminToken,
       body: {
         system_name: 'J-CONNECT',
-        tagline: 'Jigawa State Unified Human Capital Development & Career Portal',
+        tagline: 'CONNECT. LEARN. GROW.',
         logo_url: '/logo.png',
         primary_color: '#0d5c3a',
         secondary_color: '#d4a017',

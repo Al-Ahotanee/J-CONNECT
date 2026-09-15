@@ -71,8 +71,8 @@ const LandingPage = () => {
             transition={{ duration: 0.8 }}
             className="max-w-3xl mx-auto"
           >
-            <div className="inline-flex items-center gap-2 bg-secondary/20 border border-secondary/30 rounded-full px-4 py-1.5 mb-6">
-              <span className="text-sm font-medium text-secondary">🇳🇬 Jigawa State Initiative</span>
+            <div className="inline-flex items-center gap-2 bg-emerald-500/20 border border-emerald-400/40 backdrop-blur-md rounded-full px-5 py-1.5 mb-6 shadow-sm">
+              <span className="text-xs md:text-sm font-black tracking-widest text-emerald-200 uppercase">CONNECT. LEARN. GROW.</span>
             </div>
             
             <h1 className="font-display text-4xl md:text-6xl lg:text-7xl font-bold text-primary-foreground mb-6 leading-tight">
@@ -80,19 +80,31 @@ const LandingPage = () => {
               <span className="block text-secondary"> Human Capital</span>
             </h1>
             
-            <p className="text-lg md:text-xl text-primary-foreground/80 mb-8 max-w-2xl mx-auto font-body">
+            <p className="text-lg md:text-xl text-primary-foreground/90 mb-8 max-w-2xl mx-auto font-body">
               A unified platform for career development, mentorship, job placement, 
               and skills acquisition across all 27 Local Government Areas.
             </p>
 
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <Button variant="hero" size="xl" asChild>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
+              <Button
+                size="xl"
+                className="w-full sm:w-auto bg-amber-400 hover:bg-amber-500 text-slate-950 font-black tracking-wide shadow-xl shadow-black/20 h-14 px-8 rounded-xl text-base transition-all transform hover:-translate-y-0.5"
+                asChild
+              >
                 <Link to="/register">Register Now</Link>
               </Button>
-              <Button variant="hero-outline" size="xl" asChild>
+              <Button
+                size="xl"
+                className="w-full sm:w-auto bg-white hover:bg-slate-100 text-emerald-950 font-black tracking-wide shadow-xl shadow-black/20 h-14 px-8 rounded-xl text-base border-2 border-white transition-all transform hover:-translate-y-0.5"
+                asChild
+              >
                 <Link to="/login">Sign In</Link>
               </Button>
-              <Button variant="hero-outline" size="xl" asChild>
+              <Button
+                size="xl"
+                className="w-full sm:w-auto bg-emerald-950/80 hover:bg-emerald-900 text-white font-black tracking-wide shadow-xl shadow-black/20 h-14 px-8 rounded-xl text-base border-2 border-emerald-400/90 backdrop-blur-md transition-all transform hover:-translate-y-0.5"
+                asChild
+              >
                 <Link to="/jobs-board">Browse Jobs</Link>
               </Button>
             </div>
