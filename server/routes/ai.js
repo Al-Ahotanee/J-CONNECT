@@ -3,6 +3,16 @@ import bcrypt from 'bcryptjs';
 import { v4 as uuidv4 } from 'uuid';
 import { query } from '../db.js';
 import { requireAuth, optionalAuth } from '../middleware/auth.js';
+import {
+  evaluateInputQuality,
+  isInitialSessionStart,
+  getQuestionForStage,
+  analyzeAnswerQuality,
+  determineCurrentStage,
+  generateScorecard,
+  generateInterviewTips,
+  generateCoachChatReply
+} from '../services/interviewCoachNLP.js';
 
 const router = express.Router();
 
@@ -261,22 +271,33 @@ router.post('/ai-interview-coach', optionalAuth, async (req, res) => {
     let reply = '';
     const apiKey = process.env.GEMINI_API_KEY || process.env.OPENAI_API_KEY;
 
+    // 1. If LLM API key is present, attempt generative completion with strict evaluation rules
     if (apiKey && lastUserMsg) {
       try {
         const sysPrompt = mode === 'tips' 
-          ? `You are an expert interview coach for candidates in Nigeria (specifically Jigawa State). Provide 3-4 structured, actionable tips for succeeding in a ${jobTitle} interview.`
-          : `You are a professional HR interviewer conducting a realistic mock interview for a ${jobTitle} position in Nigeria/Jigawa State. 
-Provide constructive, concise feedback on their previous answer, followed by your next thoughtful interview question.`;
+          ? `You are an expert interview coach for candidates in Jigawa State, Nigeria. Provide structured, actionable, and role-specific interview preparation tips for a ${jobTitle} position.`
+          : mode === 'chat'
+          ? `You are a supportive, insightful career coach at J-Connect for candidates in Jigawa State. Answer candidate questions about interviews, salary negotiation, resume preparation, and confidence for ${jobTitle} roles.`
+          : `You are an experienced HR interviewer conducting a structured 5-stage mock interview for a ${jobTitle} position in Jigawa State, Nigeria.
+STRICT GUIDELINES:
+1. Candidate Input Validation: If the candidate inputs repeated characters (e.g. "JJJJJJJJ", "HHHHHHH"), single tokens, or low-effort gibberish, DO NOT PRAISE THEM. Politely explain why their answer is incomplete and prompt them to expand with a concrete example.
+2. Progressive Stages: Do not repeat questions. Progress through:
+   - Stage 1: Professional Background & Motivation
+   - Stage 2: Technical/Domain Problem Solving for ${jobTitle}
+   - Stage 3: Behavioral Challenge (STAR Method: Situation, Task, Action, Result)
+   - Stage 4: Conflict Resolution, Team Dynamics & Integrity
+   - Stage 5: Civic Impact in Jigawa State & Candidate Q&A
+3. Constructive Feedback: Provide thoughtful, specific critique on their previous answer before moving to the next stage question.`;
 
-        const conversationHistory = messages.slice(-6).map(m => `${m.role === 'user' ? 'Candidate' : 'Interviewer'}: ${m.content}`).join('\n');
-        const prompt = `${sysPrompt}\n\nRecent Conversation:\n${conversationHistory}\n\nCandidate's latest response:\n"${lastUserMsg}"\n\nYour response:`;
+        const conversationHistory = messages.slice(-8).map(m => `${m.role === 'user' ? 'Candidate' : 'Interviewer'}: ${m.content}`).join('\n');
+        const prompt = `${sysPrompt}\n\nRecent Conversation:\n${conversationHistory}\n\nCandidate's latest input:\n"${lastUserMsg}"\n\nYour response:`;
 
         const aiResponse = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             contents: [{ parts: [{ text: prompt }] }],
-            generationConfig: { maxOutputTokens: 500, temperature: 0.7 }
+            generationConfig: { maxOutputTokens: 600, temperature: 0.7 }
           })
         });
 
@@ -292,21 +313,114 @@ Provide constructive, concise feedback on their previous answer, followed by you
       }
     }
 
+    // 2. Deterministic Intelligent Multi-Turn NLP Engine (Runs offline or as fail-safe)
     if (!reply) {
       if (mode === 'tips') {
-        reply = `Here are 3 key strategies for succeeding in a ${jobTitle} interview in Jigawa State:
-1. **STAR Method**: Structure your answers with Situation, Task, Action, and Result.
-2. **Contextual Awareness**: Highlight how your skills directly solve local community or ministry challenges.
-3. **Prepared Inquiries**: Always ask 1-2 thoughtful questions about organizational growth and team workflow.`;
-      } else if (mode === 'practice') {
-        reply = `Thank you for sharing that. You demonstrated clear ownership of the problem!
-
-Here is your next mock interview question for the **${jobTitle}** position:
-*"Can you describe a time when you had to work under high pressure with limited resources, and how you ensured the project was delivered on time?"*
-
-Take your time to structure your response using the STAR approach.`;
+        reply = generateInterviewTips(jobTitle);
+      } else if (mode === 'chat') {
+        reply = generateCoachChatReply(lastUserMsg, jobTitle);
       } else {
-        reply = `I am your J-Connect Career Coach. How can I assist your preparation for the ${jobTitle} role today? We can practice behavioral questions, review technical topics, or polish your elevator pitch.`;
+        // Mode === 'practice' (Mock Interview Session)
+        const isStart = isInitialSessionStart(lastUserMsg, messages);
+
+        if (isStart) {
+          // Opening Session & Stage 1 Question
+          const q1 = getQuestionForStage(1, jobTitle);
+          reply = `Welcome to your mock interview session for the **${jobTitle}** position in Jigawa State! I am your AI Interview Coach.
+
+We will conduct a 5-stage comprehensive interview:
+1. **Background & Professional Value Proposition**
+2. **Technical & Domain Execution**
+3. **Behavioral Challenge (STAR Method)**
+4. **Team Collaboration, Conflict Resolution & Integrity**
+5. **Civic Alignment & Candidate Q&A**
+
+Let's begin with our first question:
+
+---
+
+### **${q1.title}**
+${q1.question}
+
+💡 **Coach Tip:** ${q1.tip}`;
+        } else {
+          // Candidate answered or provided input
+          const quality = evaluateInputQuality(lastUserMsg);
+
+          // Determine the stage of the interview
+          let currentStage = determineCurrentStage(messages);
+          if (currentStage === 0) currentStage = 1;
+
+          if (!quality.isValid) {
+            // Gibberish / Low-effort input detected!
+            const stageInfo = getQuestionForStage(Math.min(currentStage, 5), jobTitle) || getQuestionForStage(1, jobTitle);
+            const userSnippet = lastUserMsg.length > 25 ? lastUserMsg.slice(0, 22) + '...' : lastUserMsg;
+
+            reply = `⚠️ **Incomplete or Low-Effort Response Detected**
+
+${quality.feedback}
+
+In a competitive interview for a **${jobTitle}** position, interview panels in Jigawa State evaluate communication depth, professional articulation, and concrete examples. Your response \`"${userSnippet}"\` cannot be evaluated.
+
+---
+
+### **Please provide a substantive answer for ${stageInfo.title}:**
+${stageInfo.question}
+
+💡 **Coach Tip:** ${stageInfo.tip}`;
+          } else {
+            // Legitimate response provided!
+            const evaluation = analyzeAnswerQuality(lastUserMsg, currentStage, jobTitle);
+
+            if (currentStage === 1) {
+              const q2 = getQuestionForStage(2, jobTitle);
+              reply = `${evaluation.feedback}
+
+---
+
+### **${q2.title}**
+${q2.question}
+
+💡 **Coach Tip:** ${q2.tip}`;
+            } else if (currentStage === 2) {
+              const q3 = getQuestionForStage(3, jobTitle);
+              reply = `${evaluation.feedback}
+
+---
+
+### **${q3.title}**
+${q3.question}
+
+💡 **Coach Tip:** ${q3.tip}`;
+            } else if (currentStage === 3) {
+              const q4 = getQuestionForStage(4, jobTitle);
+              reply = `${evaluation.feedback}
+
+---
+
+### **${q4.title}**
+${q4.question}
+
+💡 **Coach Tip:** ${q4.tip}`;
+            } else if (currentStage === 4) {
+              const q5 = getQuestionForStage(5, jobTitle);
+              reply = `${evaluation.feedback}
+
+---
+
+### **${q5.title}**
+${q5.question}
+
+💡 **Coach Tip:** ${q5.tip}`;
+            } else {
+              // Stage 5 completed -> Deliver Comprehensive Final Scorecard!
+              const scorecard = generateScorecard(jobTitle, messages);
+              reply = `${evaluation.feedback}
+
+${scorecard}`;
+            }
+          }
+        }
       }
     }
 
