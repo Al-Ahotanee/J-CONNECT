@@ -69,18 +69,25 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: err.message || 'Internal Server Error' });
 });
 
-app.listen(PORT, async () => {
-  console.log(`=========================================`);
-  console.log(`  J-CONNECT SERVER RUNNING ON PORT ${PORT}`);
-  console.log(`  Environment: ${process.env.NODE_ENV || 'development'}`);
-  console.log(`=========================================`);
-  
-  try {
-    await initDatabase();
-    console.log('[Server Startup] Database tables & seed accounts verified.');
-  } catch (err) {
-    console.warn('[Server Startup] Auto-migration warning:', err.message);
-  }
-});
+const isDirectRun = process.argv[1] && (
+  process.argv[1].endsWith('index.js') || 
+  process.argv[1].includes('server')
+) && !process.argv[1].includes('uat-runner');
+
+if (isDirectRun) {
+  app.listen(PORT, async () => {
+    console.log(`=========================================`);
+    console.log(`  J-CONNECT SERVER RUNNING ON PORT ${PORT}`);
+    console.log(`  Environment: ${process.env.NODE_ENV || 'development'}`);
+    console.log(`=========================================`);
+    
+    try {
+      await initDatabase();
+      console.log('[Server Startup] Database tables & seed accounts verified.');
+    } catch (err) {
+      console.warn('[Server Startup] Auto-migration warning:', err.message);
+    }
+  });
+}
 
 export default app;
