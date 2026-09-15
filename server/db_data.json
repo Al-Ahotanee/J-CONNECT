@@ -255,6 +255,44 @@
       "email": "grassroots.ward.1789465090158@jconnect.gov.ng",
       "password_hash": "$2a$10$h5ZKNCYIvFQ8u3R/e6Os4Ok1mCfIslNn7hA6iCjDCFy6m8SW3GSj.",
       "created_at": "2026-09-15T09:38:10.596Z"
+    },
+    {
+      "id": "c754868a-e21c-447b-83ac-919003fd9b03",
+      "email": "citizen.uat.1789467627631@jconnect.gov.ng",
+      "password_hash": "$2a$10$8X6HH4aQmzQmOJm9vu/AS.Wd0yI6d7uuCUYFzxOjS6EpbXO96tNTS",
+      "created_at": "2026-09-15T10:20:27.768Z",
+      "updated_at": "2026-09-15T10:20:30.090Z"
+    },
+    {
+      "id": "b46404eb-296e-4367-996b-fdd724d9045e",
+      "email": "grassroots.lga.1789467627895@jconnect.gov.ng",
+      "password_hash": "$2a$10$SRwOifZJamtAQY14vfxKWO.iC.FGgQgETFFrD.XlKlYUjVSPe5oFy",
+      "created_at": "2026-09-15T10:20:28.016Z"
+    },
+    {
+      "id": "5e47a9a8-205e-4aa0-9b2d-7153f734be6c",
+      "email": "grassroots.ward.1789467628034@jconnect.gov.ng",
+      "password_hash": "$2a$10$b55D06HtOIkz9P7aTB2ZUeQ1YKFAPGCWhvILA4pExc1jC44/hjQ7O",
+      "created_at": "2026-09-15T10:20:28.156Z"
+    },
+    {
+      "id": "8e2d9b91-1199-4120-a62e-d2b978110079",
+      "email": "citizen.uat.1789468445406@jconnect.gov.ng",
+      "password_hash": "$2a$10$yCScpqP6Skq4yadr01OjYu7LUOMi/t7FqULTFtiFyKyvBSex9QmUq",
+      "created_at": "2026-09-15T10:34:05.551Z",
+      "updated_at": "2026-09-15T10:34:10.121Z"
+    },
+    {
+      "id": "94ffbd6d-43f8-4cab-9736-5e9dce0dd151",
+      "email": "grassroots.lga.1789468445660@jconnect.gov.ng",
+      "password_hash": "$2a$10$Xx/wquiDoTaQSMG4rknw6OOPFt7Nqa9MwMtf3LqJ0Y5vSFsfZMvJ6",
+      "created_at": "2026-09-15T10:34:05.819Z"
+    },
+    {
+      "id": "69089dca-5e9a-40c2-b2e0-1697a3d1fc5d",
+      "email": "grassroots.ward.1789468445836@jconnect.gov.ng",
+      "password_hash": "$2a$10$c/kOOEBsj/.uwvVf8GkhIuF3OAE.I/SOgQOsBWsDmXFfEob12sdli",
+      "created_at": "2026-09-15T10:34:05.977Z"
     }
   ],
   "user_roles": [
@@ -689,6 +727,42 @@
       "user_id": "89d547dc-fd0d-4586-bbb6-72bc6312496e",
       "role": "user",
       "created_at": "2026-09-15T09:38:10.599Z"
+    },
+    {
+      "id": "88ac9b0b-1055-49c6-a700-f1a7526132b3",
+      "user_id": "c754868a-e21c-447b-83ac-919003fd9b03",
+      "role": "user",
+      "created_at": "2026-09-15T10:20:27.790Z"
+    },
+    {
+      "id": "d920a337-1033-4804-9740-bee74284e3ff",
+      "user_id": "b46404eb-296e-4367-996b-fdd724d9045e",
+      "role": "user",
+      "created_at": "2026-09-15T10:20:28.021Z"
+    },
+    {
+      "id": "e38e522a-db53-45b5-9524-2ef45494d01b",
+      "user_id": "5e47a9a8-205e-4aa0-9b2d-7153f734be6c",
+      "role": "user",
+      "created_at": "2026-09-15T10:20:28.159Z"
+    },
+    {
+      "id": "21bf0046-0b84-4796-bd3c-843f46b11fb2",
+      "user_id": "8e2d9b91-1199-4120-a62e-d2b978110079",
+      "role": "user",
+      "created_at": "2026-09-15T10:34:05.558Z"
+    },
+    {
+      "id": "ccf0ffd8-c80d-4e9c-9cd3-649823807cca",
+      "user_id": "94ffbd6d-43f8-4cab-9736-5e9dce0dd151",
+      "role": "user",
+      "created_at": "2026-09-15T10:34:05.823Z"
+    },
+    {
+      "id": "fbfbe377-e860-46be-800d-624d38eed63b",
+      "user_id": "69089dca-5e9a-40c2-b2e0-1697a3d1fc5d",
+      "role": "user",
+      "created_at": "2026-09-15T10:34:05.985Z"
     }
   ],
   "profiles": [
@@ -2075,6 +2149,104 @@
       "profile_completion": 60,
       "approval_status": "approved",
       "created_at": "2026-09-15T09:38:10.607Z"
+    },
+    {
+      "id": "1d8ba79a-d962-4d2f-b2ed-fdac63976d2b",
+      "user_id": "c754868a-e21c-447b-83ac-919003fd9b03",
+      "full_name": "Usman Garba Ringim",
+      "email": "citizen.uat.1789467627631@jconnect.gov.ng",
+      "phone": "08099887766",
+      "lga": "Ringim",
+      "ward": "Ringim Central",
+      "gender": "Male",
+      "employment_status": "Unemployed",
+      "user_type": "job_seeker",
+      "profile_completion": 90,
+      "approval_status": "pending",
+      "created_at": "2026-09-15T10:20:27.793Z",
+      "skills": "[\"JavaScript\",\"Node.js\",\"React\",\"MySQL\",\"Cloud Architecture\"]",
+      "sector": "ICT & Technology",
+      "bio": "Passionate full-stack developer committed to public service and Jigawa digitalization.",
+      "updated_at": "2026-09-15T10:20:27.889Z"
+    },
+    {
+      "id": "6d076350-392e-4d79-9373-32f060a5766a",
+      "user_id": "b46404eb-296e-4367-996b-fdd724d9045e",
+      "full_name": "Balarabe Hassan Limawa",
+      "email": "grassroots.lga.1789467627895@jconnect.gov.ng",
+      "phone": "08022334455",
+      "lga": "Dutse",
+      "ward": "Limawa",
+      "gender": "Male",
+      "employment_status": "Self-employed",
+      "user_type": "farmer",
+      "profile_completion": 50,
+      "approval_status": "pending",
+      "created_at": "2026-09-15T10:20:28.029Z"
+    },
+    {
+      "id": "e776d6ff-1b73-48a7-b17d-23b5ad672538",
+      "user_id": "5e47a9a8-205e-4aa0-9b2d-7153f734be6c",
+      "full_name": "Halima Suleiman Dutse",
+      "email": "grassroots.ward.1789467628034@jconnect.gov.ng",
+      "phone": "08033445566",
+      "lga": "Dutse",
+      "ward": "Dutse Central",
+      "gender": "Female",
+      "employment_status": "Self-employed",
+      "user_type": "artisan",
+      "profile_completion": 50,
+      "approval_status": "pending",
+      "created_at": "2026-09-15T10:20:28.164Z"
+    },
+    {
+      "id": "f0293052-878e-4dba-a492-a951461e92b9",
+      "user_id": "8e2d9b91-1199-4120-a62e-d2b978110079",
+      "full_name": "Usman Garba Ringim",
+      "email": "citizen.uat.1789468445406@jconnect.gov.ng",
+      "phone": "08099887766",
+      "lga": "Ringim",
+      "ward": "Ringim Central",
+      "gender": "Male",
+      "employment_status": "Unemployed",
+      "user_type": "job_seeker",
+      "profile_completion": 90,
+      "approval_status": "pending",
+      "created_at": "2026-09-15T10:34:05.562Z",
+      "skills": "[\"JavaScript\",\"Node.js\",\"React\",\"MySQL\",\"Cloud Architecture\"]",
+      "sector": "ICT & Technology",
+      "bio": "Passionate full-stack developer committed to public service and Jigawa digitalization.",
+      "updated_at": "2026-09-15T10:34:05.651Z"
+    },
+    {
+      "id": "f2e81cf5-b9f1-4789-abdc-1e5d7495505c",
+      "user_id": "94ffbd6d-43f8-4cab-9736-5e9dce0dd151",
+      "full_name": "Balarabe Hassan Limawa",
+      "email": "grassroots.lga.1789468445660@jconnect.gov.ng",
+      "phone": "08022334455",
+      "lga": "Dutse",
+      "ward": "Limawa",
+      "gender": "Male",
+      "employment_status": "Self-employed",
+      "user_type": "farmer",
+      "profile_completion": 50,
+      "approval_status": "pending",
+      "created_at": "2026-09-15T10:34:05.827Z"
+    },
+    {
+      "id": "8cc2b69b-8b3c-4e5c-963a-681fbec4b5c1",
+      "user_id": "69089dca-5e9a-40c2-b2e0-1697a3d1fc5d",
+      "full_name": "Halima Suleiman Dutse",
+      "email": "grassroots.ward.1789468445836@jconnect.gov.ng",
+      "phone": "08033445566",
+      "lga": "Dutse",
+      "ward": "Dutse Central",
+      "gender": "Female",
+      "employment_status": "Self-employed",
+      "user_type": "artisan",
+      "profile_completion": 50,
+      "approval_status": "pending",
+      "created_at": "2026-09-15T10:34:05.989Z"
     }
   ],
   "education": [
@@ -2117,6 +2289,26 @@
       "grade": "First Class",
       "id": "34c4ceb9-f7a3-431f-bc91-0a3cf2d1b76c",
       "created_at": "2026-09-15T09:38:09.909Z"
+    },
+    {
+      "user_id": "c754868a-e21c-447b-83ac-919003fd9b03",
+      "institution": "Federal University Dutse (FUD)",
+      "qualification_type": "B.Sc/B.A/B.Ed/B.Tech",
+      "field_of_study": "Software Engineering",
+      "year_of_graduation": "2024",
+      "grade": "First Class",
+      "id": "43a32522-1879-4a16-9a5c-d97781d4e013",
+      "created_at": "2026-09-15T10:20:27.815Z"
+    },
+    {
+      "user_id": "8e2d9b91-1199-4120-a62e-d2b978110079",
+      "institution": "Federal University Dutse (FUD)",
+      "qualification_type": "B.Sc/B.A/B.Ed/B.Tech",
+      "field_of_study": "Software Engineering",
+      "year_of_graduation": "2024",
+      "grade": "First Class",
+      "id": "1d8b2ff3-79d2-4b0d-9f64-eb74223e3962",
+      "created_at": "2026-09-15T10:34:05.603Z"
     }
   ],
   "jobs": [
@@ -2435,6 +2627,144 @@
       "is_active": true,
       "id": "5be5a063-a904-4565-9a18-49991b9f7c39",
       "created_at": "2026-09-15T09:38:10.743Z"
+    },
+    {
+      "title": "Senior Cloud Solutions Architect",
+      "company": "Jigawa Digital Infrastructure Agency",
+      "location": "Dutse Central",
+      "lga": "Dutse",
+      "sector": "ICT",
+      "employment_type": "Full-time",
+      "qualification_required": "B.Sc/B.A/B.Ed/B.Tech",
+      "experience_level": "Senior",
+      "salary_range": "₦400,000 - ₦600,000 / month",
+      "skills_required": "[\"Cloud Architecture\",\"Node.js\",\"MySQL\",\"Kubernetes\",\"Security\"]",
+      "description": "Design and deploy state-wide digital platforms serving 27 LGAs in Jigawa State.",
+      "is_internal": true,
+      "is_active": true,
+      "deadline": "2026-10-15",
+      "id": "30773a92-8af6-4a71-a394-0743e4585981",
+      "created_at": "2026-09-15T10:20:28.206Z"
+    },
+    {
+      "title": "Administrative Officer II (GL 08)",
+      "company": "Jigawa State Civil Service Commission",
+      "location": "State Secretariat Complex, Dutse",
+      "lga": "Dutse",
+      "sector": "Public Administration",
+      "employment_type": "Full-time",
+      "qualification_required": "B.Sc/B.A/B.Ed/B.Tech",
+      "experience_level": "Entry Level",
+      "salary_range": "Jigawa Civil Service Salary Scale GL 08",
+      "skills_required": "[\"Administration\",\"Public Policy\",\"Records Management\"]",
+      "description": "Entry-level officer post in the administrative cadre of Jigawa State Civil Service.",
+      "is_internal": true,
+      "is_active": true,
+      "id": "f89e28d8-a569-45c8-b918-a16409e82e3e",
+      "created_at": "2026-09-15T10:20:28.237Z"
+    },
+    {
+      "title": "Senior Mathematics & Computer Science Teacher",
+      "company": "Jigawa State Universal Basic Education Board (SUBEB)",
+      "location": "Hadejia Educational Zone",
+      "lga": "Hadejia",
+      "sector": "Education",
+      "employment_type": "Full-time",
+      "qualification_required": "B.Sc/B.A/B.Ed/B.Tech",
+      "experience_level": "Mid Level",
+      "salary_range": "SUBEB Consolidated Teachers Salary",
+      "skills_required": "[\"Teaching\",\"Mathematics\",\"Computer Science\",\"Curriculum Design\"]",
+      "description": "Inspire and instruct secondary students across the Hadejia educational district.",
+      "is_internal": true,
+      "is_active": true,
+      "id": "fe29bebd-d4e5-4eba-a6ad-9daee0bcfd74",
+      "created_at": "2026-09-15T10:20:28.254Z"
+    },
+    {
+      "title": "Agro-Allied Plant Operations Supervisor",
+      "company": "Dutse Modern Agri-Processing Ltd",
+      "location": "Dutse Industrial Park",
+      "lga": "Dutse",
+      "sector": "Agriculture",
+      "employment_type": "Full-time",
+      "qualification_required": "HND",
+      "experience_level": "Mid Level",
+      "salary_range": "₦250,000 - ₦350,000 / month",
+      "skills_required": "[\"Agronomy\",\"Processing Equipment\",\"Quality Control\",\"Inventory\"]",
+      "description": "Oversee grain packaging and cold chain logistics for export distribution.",
+      "is_internal": false,
+      "is_active": true,
+      "id": "be0e1469-9245-4461-8de7-fc9caf77a656",
+      "created_at": "2026-09-15T10:20:28.262Z"
+    },
+    {
+      "title": "Senior Cloud Solutions Architect",
+      "company": "Jigawa Digital Infrastructure Agency",
+      "location": "Dutse Central",
+      "lga": "Dutse",
+      "sector": "ICT",
+      "employment_type": "Full-time",
+      "qualification_required": "B.Sc/B.A/B.Ed/B.Tech",
+      "experience_level": "Senior",
+      "salary_range": "₦400,000 - ₦600,000 / month",
+      "skills_required": "[\"Cloud Architecture\",\"Node.js\",\"MySQL\",\"Kubernetes\",\"Security\"]",
+      "description": "Design and deploy state-wide digital platforms serving 27 LGAs in Jigawa State.",
+      "is_internal": true,
+      "is_active": true,
+      "deadline": "2026-10-15",
+      "id": "67103283-8563-41d8-93f5-827e59044e4b",
+      "created_at": "2026-09-15T10:34:06.019Z"
+    },
+    {
+      "title": "Administrative Officer II (GL 08)",
+      "company": "Jigawa State Civil Service Commission",
+      "location": "State Secretariat Complex, Dutse",
+      "lga": "Dutse",
+      "sector": "Public Administration",
+      "employment_type": "Full-time",
+      "qualification_required": "B.Sc/B.A/B.Ed/B.Tech",
+      "experience_level": "Entry Level",
+      "salary_range": "Jigawa Civil Service Salary Scale GL 08",
+      "skills_required": "[\"Administration\",\"Public Policy\",\"Records Management\"]",
+      "description": "Entry-level officer post in the administrative cadre of Jigawa State Civil Service.",
+      "is_internal": true,
+      "is_active": true,
+      "id": "3bfc61db-648c-46b6-ac61-cfaec89c308d",
+      "created_at": "2026-09-15T10:34:06.044Z"
+    },
+    {
+      "title": "Senior Mathematics & Computer Science Teacher",
+      "company": "Jigawa State Universal Basic Education Board (SUBEB)",
+      "location": "Hadejia Educational Zone",
+      "lga": "Hadejia",
+      "sector": "Education",
+      "employment_type": "Full-time",
+      "qualification_required": "B.Sc/B.A/B.Ed/B.Tech",
+      "experience_level": "Mid Level",
+      "salary_range": "SUBEB Consolidated Teachers Salary",
+      "skills_required": "[\"Teaching\",\"Mathematics\",\"Computer Science\",\"Curriculum Design\"]",
+      "description": "Inspire and instruct secondary students across the Hadejia educational district.",
+      "is_internal": true,
+      "is_active": true,
+      "id": "a58095b3-1be1-49e2-95f6-5c95d604143a",
+      "created_at": "2026-09-15T10:34:06.059Z"
+    },
+    {
+      "title": "Agro-Allied Plant Operations Supervisor",
+      "company": "Dutse Modern Agri-Processing Ltd",
+      "location": "Dutse Industrial Park",
+      "lga": "Dutse",
+      "sector": "Agriculture",
+      "employment_type": "Full-time",
+      "qualification_required": "HND",
+      "experience_level": "Mid Level",
+      "salary_range": "₦250,000 - ₦350,000 / month",
+      "skills_required": "[\"Agronomy\",\"Processing Equipment\",\"Quality Control\",\"Inventory\"]",
+      "description": "Oversee grain packaging and cold chain logistics for export distribution.",
+      "is_internal": false,
+      "is_active": true,
+      "id": "7da9667c-3c71-4c3d-a2f6-d024a8584da5",
+      "created_at": "2026-09-15T10:34:06.083Z"
     }
   ],
   "job_applications": [
@@ -2473,6 +2803,24 @@
       "id": "ab2f6f27-6dbc-474c-b56c-a6f9a220d579",
       "created_at": "2026-09-15T09:38:10.792Z",
       "updated_at": "2026-09-15T09:38:10.848Z"
+    },
+    {
+      "job_id": "30773a92-8af6-4a71-a394-0743e4585981",
+      "user_id": "c754868a-e21c-447b-83ac-919003fd9b03",
+      "status": "shortlisted",
+      "cover_letter": "I have proven expertise in Node.js, React, and MySQL architectures with First Class Honors from FUD.",
+      "id": "04c2479d-0bae-4bd1-9d0f-d6952d259dec",
+      "created_at": "2026-09-15T10:20:28.280Z",
+      "updated_at": "2026-09-15T10:20:28.312Z"
+    },
+    {
+      "job_id": "67103283-8563-41d8-93f5-827e59044e4b",
+      "user_id": "8e2d9b91-1199-4120-a62e-d2b978110079",
+      "status": "shortlisted",
+      "cover_letter": "I have proven expertise in Node.js, React, and MySQL architectures with First Class Honors from FUD.",
+      "id": "1677c306-e9cf-4cb8-b466-dddd054d9843",
+      "created_at": "2026-09-15T10:34:06.140Z",
+      "updated_at": "2026-09-15T10:34:06.191Z"
     }
   ],
   "job_offers": [
@@ -2527,9 +2875,60 @@
       "created_at": "2026-09-15T09:38:10.926Z",
       "responded_at": "2026-09-15T09:38:10.930Z",
       "updated_at": "2026-09-15T09:38:10.942Z"
+    },
+    {
+      "application_id": "04c2479d-0bae-4bd1-9d0f-d6952d259dec",
+      "job_id": "30773a92-8af6-4a71-a394-0743e4585981",
+      "user_id": "c754868a-e21c-447b-83ac-919003fd9b03",
+      "recruiter_id": "67fa0c7c-a3cd-4687-b642-c0d19b93288b",
+      "salary_offered": "450,000 NGN / month",
+      "status": "accepted",
+      "offer_details": "Formal offer for Senior Cloud Solutions Architect at Jigawa Digital Infrastructure Agency.",
+      "id": "4e53e66b-cbcc-4552-9a15-0ea3c6dfd327",
+      "created_at": "2026-09-15T10:20:28.426Z",
+      "responded_at": "2026-09-15T10:20:28.432Z",
+      "updated_at": "2026-09-15T10:20:28.434Z"
+    },
+    {
+      "application_id": "1677c306-e9cf-4cb8-b466-dddd054d9843",
+      "job_id": "67103283-8563-41d8-93f5-827e59044e4b",
+      "user_id": "8e2d9b91-1199-4120-a62e-d2b978110079",
+      "recruiter_id": "67fa0c7c-a3cd-4687-b642-c0d19b93288b",
+      "salary_offered": "450,000 NGN / month",
+      "status": "accepted",
+      "offer_details": "Formal offer for Senior Cloud Solutions Architect at Jigawa Digital Infrastructure Agency.",
+      "id": "236d7b1d-f9d1-4e19-a651-14b51fc1a308",
+      "created_at": "2026-09-15T10:34:06.427Z",
+      "responded_at": "2026-09-15T10:34:06.434Z",
+      "updated_at": "2026-09-15T10:34:06.443Z"
     }
   ],
-  "interview_invitations": [],
+  "interview_invitations": [
+    {
+      "job_id": "30773a92-8af6-4a71-a394-0743e4585981",
+      "application_id": "04c2479d-0bae-4bd1-9d0f-d6952d259dec",
+      "user_id": "c754868a-e21c-447b-83ac-919003fd9b03",
+      "recruiter_id": "67fa0c7c-a3cd-4687-b642-c0d19b93288b",
+      "type": "virtual",
+      "scheduled_at": "2026-09-16T10:20:28.337Z",
+      "notes": "Please prepare a 10-minute architecture review presentation.",
+      "status": "accepted",
+      "id": "708bd6db-c669-4941-9002-65e1cf2745d3",
+      "created_at": "2026-09-15T10:20:28.353Z"
+    },
+    {
+      "job_id": "67103283-8563-41d8-93f5-827e59044e4b",
+      "application_id": "1677c306-e9cf-4cb8-b466-dddd054d9843",
+      "user_id": "8e2d9b91-1199-4120-a62e-d2b978110079",
+      "recruiter_id": "67fa0c7c-a3cd-4687-b642-c0d19b93288b",
+      "type": "virtual",
+      "scheduled_at": "2026-09-16T10:34:06.223Z",
+      "notes": "Please prepare a 10-minute architecture review presentation.",
+      "status": "accepted",
+      "id": "baa448cb-d993-4c34-be03-b5d88cf69e92",
+      "created_at": "2026-09-15T10:34:06.270Z"
+    }
+  ],
   "candidate_scores": [
     {
       "application_id": "fe3ea7c5-be20-4ae3-8606-b2fd91590935",
@@ -2578,12 +2977,132 @@
       "notes": "Outstanding technical understanding of cloud architecture and state digitalization goals.",
       "id": "94e894fb-ec97-48a3-aece-97676c53a707",
       "created_at": "2026-09-15T09:38:10.909Z"
+    },
+    {
+      "application_id": "04c2479d-0bae-4bd1-9d0f-d6952d259dec",
+      "recruiter_id": "67fa0c7c-a3cd-4687-b642-c0d19b93288b",
+      "technical_score": 95,
+      "communication_score": 90,
+      "experience_score": 88,
+      "cultural_fit_score": 92,
+      "total_score": 92,
+      "notes": "Outstanding technical understanding of cloud architecture and state digitalization goals.",
+      "id": "562879f5-7515-4e5c-b31e-59206f6430a2",
+      "created_at": "2026-09-15T10:20:28.414Z"
+    },
+    {
+      "application_id": "1677c306-e9cf-4cb8-b466-dddd054d9843",
+      "recruiter_id": "67fa0c7c-a3cd-4687-b642-c0d19b93288b",
+      "technical_score": 95,
+      "communication_score": 90,
+      "experience_score": 88,
+      "cultural_fit_score": 92,
+      "total_score": 92,
+      "notes": "Outstanding technical understanding of cloud architecture and state digitalization goals.",
+      "id": "25ed6614-6678-45fb-9265-6e8709f04cef",
+      "created_at": "2026-09-15T10:34:06.321Z"
     }
   ],
-  "pipeline_history": [],
-  "saved_candidates": [],
-  "company_profiles": [],
-  "company_reviews": [],
+  "pipeline_history": [
+    {
+      "application_id": "04c2479d-0bae-4bd1-9d0f-d6952d259dec",
+      "from_status": null,
+      "to_status": "applied",
+      "changed_by": "67fa0c7c-a3cd-4687-b642-c0d19b93288b",
+      "notes": "Application received via J-CONNECT public jobs portal.",
+      "id": "42303096-b5d9-4d44-b5aa-366781913484",
+      "created_at": "2026-09-15T10:20:28.290Z"
+    },
+    {
+      "application_id": "04c2479d-0bae-4bd1-9d0f-d6952d259dec",
+      "from_status": "applied",
+      "to_status": "shortlisted",
+      "changed_by": "67fa0c7c-a3cd-4687-b642-c0d19b93288b",
+      "notes": "Technical profile screening passed with 95% qualification alignment.",
+      "id": "3b1c6313-fe3b-46da-bca5-c1ad03b19618",
+      "created_at": "2026-09-15T10:20:28.332Z"
+    },
+    {
+      "application_id": "1677c306-e9cf-4cb8-b466-dddd054d9843",
+      "from_status": null,
+      "to_status": "applied",
+      "changed_by": "67fa0c7c-a3cd-4687-b642-c0d19b93288b",
+      "notes": "Application received via J-CONNECT public jobs portal.",
+      "id": "30cc7f08-1229-431e-a314-8344453db345",
+      "created_at": "2026-09-15T10:34:06.157Z"
+    },
+    {
+      "application_id": "1677c306-e9cf-4cb8-b466-dddd054d9843",
+      "from_status": "applied",
+      "to_status": "shortlisted",
+      "changed_by": "67fa0c7c-a3cd-4687-b642-c0d19b93288b",
+      "notes": "Technical profile screening passed with 95% qualification alignment.",
+      "id": "be339ed7-b996-4852-8052-3e757f1cb425",
+      "created_at": "2026-09-15T10:34:06.211Z"
+    }
+  ],
+  "saved_candidates": [
+    {
+      "recruiter_id": "67fa0c7c-a3cd-4687-b642-c0d19b93288b",
+      "candidate_id": "c754868a-e21c-447b-83ac-919003fd9b03",
+      "notes": "Top prospect for Cloud Solutions Architect position.",
+      "id": "f0e01af9-e885-49d3-abca-37053ddcf180",
+      "created_at": "2026-09-15T10:20:28.270Z"
+    },
+    {
+      "recruiter_id": "67fa0c7c-a3cd-4687-b642-c0d19b93288b",
+      "candidate_id": "8e2d9b91-1199-4120-a62e-d2b978110079",
+      "notes": "Top prospect for Cloud Solutions Architect position.",
+      "id": "709da22b-da71-44e5-af74-ab07f1b6855b",
+      "created_at": "2026-09-15T10:34:06.096Z"
+    }
+  ],
+  "company_profiles": [
+    {
+      "user_id": "67fa0c7c-a3cd-4687-b642-c0d19b93288b",
+      "name": "Jigawa Digital Infrastructure Agency (JDIA)",
+      "logo_url": "https://cdn.jconnect.gov.ng/logos/jdia.png",
+      "description": "Lead government agency driving state digital transformation, telecommunications, and public cloud systems.",
+      "industry": "Information Technology",
+      "location": "Dutse Central, Jigawa State",
+      "website": "https://jdia.jigawa.gov.ng",
+      "size": "100-500 employees",
+      "id": "14ce5bc5-1ff3-4a3a-9586-4a13bd501a5c",
+      "created_at": "2026-09-15T10:20:28.182Z"
+    },
+    {
+      "user_id": "67fa0c7c-a3cd-4687-b642-c0d19b93288b",
+      "name": "Jigawa Digital Infrastructure Agency (JDIA)",
+      "logo_url": "https://cdn.jconnect.gov.ng/logos/jdia.png",
+      "description": "Lead government agency driving state digital transformation, telecommunications, and public cloud systems.",
+      "industry": "Information Technology",
+      "location": "Dutse Central, Jigawa State",
+      "website": "https://jdia.jigawa.gov.ng",
+      "size": "100-500 employees",
+      "id": "cd44b7f0-6601-42d6-b3d3-666d2c35d01c",
+      "created_at": "2026-09-15T10:34:06.003Z"
+    }
+  ],
+  "company_reviews": [
+    {
+      "company_id": "14ce5bc5-1ff3-4a3a-9586-4a13bd501a5c",
+      "user_id": "c754868a-e21c-447b-83ac-919003fd9b03",
+      "rating": 5,
+      "title": "Exceptional recruitment process and transparent communication",
+      "review": "Transparent recruitment experience with structured assessments and swift feedback from JDIA.",
+      "id": "6885892f-1a3c-4b89-afd6-04b7e1acfd4b",
+      "created_at": "2026-09-15T10:20:28.454Z"
+    },
+    {
+      "company_id": "cd44b7f0-6601-42d6-b3d3-666d2c35d01c",
+      "user_id": "8e2d9b91-1199-4120-a62e-d2b978110079",
+      "rating": 5,
+      "title": "Exceptional recruitment process and transparent communication",
+      "review": "Transparent recruitment experience with structured assessments and swift feedback from JDIA.",
+      "id": "e3f50791-0cbf-4b48-97c9-0dec04366319",
+      "created_at": "2026-09-15T10:34:06.541Z"
+    }
+  ],
   "mentors": [
     {
       "id": "7ed28657-f012-4b43-a9d0-1208cd91edba",
@@ -2608,6 +3127,30 @@
       "rating": 4.9,
       "is_active": true,
       "created_at": "2026-09-14T22:14:26.297Z"
+    },
+    {
+      "user_id": "3508d52d-f6fc-4c4e-ade4-94e62692ca42",
+      "category": "ICT & Technology",
+      "bio": "Principal Cloud Architect with 12+ years building enterprise GovTech systems.",
+      "years_experience": 12,
+      "max_mentees": 10,
+      "current_mentees": 1,
+      "rating": 5,
+      "is_active": true,
+      "id": "2308f37e-d048-4d69-bfd1-144c08d08072",
+      "created_at": "2026-09-15T10:20:28.750Z"
+    },
+    {
+      "user_id": "3508d52d-f6fc-4c4e-ade4-94e62692ca42",
+      "category": "ICT & Technology",
+      "bio": "Principal Cloud Architect with 12+ years building enterprise GovTech systems.",
+      "years_experience": 12,
+      "max_mentees": 10,
+      "current_mentees": 1,
+      "rating": 5,
+      "is_active": true,
+      "id": "f8dad43b-3d29-4dee-9d56-d6fa2cabd3a6",
+      "created_at": "2026-09-15T10:34:08.174Z"
     }
   ],
   "mentorship_mappings": [
@@ -2646,6 +3189,24 @@
       "match_reason": "ICT industry alignment and digital transformation leadership potential",
       "id": "cfd2f543-2b4b-45a9-8a12-32d3c0dc8606",
       "created_at": "2026-09-15T09:38:11.495Z"
+    },
+    {
+      "mentor_id": "2308f37e-d048-4d69-bfd1-144c08d08072",
+      "mentee_id": "c754868a-e21c-447b-83ac-919003fd9b03",
+      "status": "active",
+      "auto_matched": false,
+      "match_reason": "Aligned in ICT & Cloud Software Development with verified graduation credentials.",
+      "id": "9f69d0ac-1995-4403-8351-3e42123aa82c",
+      "created_at": "2026-09-15T10:20:28.790Z"
+    },
+    {
+      "mentor_id": "f8dad43b-3d29-4dee-9d56-d6fa2cabd3a6",
+      "mentee_id": "8e2d9b91-1199-4120-a62e-d2b978110079",
+      "status": "active",
+      "auto_matched": false,
+      "match_reason": "Aligned in ICT & Cloud Software Development with verified graduation credentials.",
+      "id": "56c3753f-80ff-4bdf-ba53-105a6c2db382",
+      "created_at": "2026-09-15T10:34:08.318Z"
     }
   ],
   "mentorship_sessions": [
@@ -2692,6 +3253,28 @@
       "status": "scheduled",
       "id": "98d010aa-6cf5-4343-98e3-0de8f02b79dd",
       "created_at": "2026-09-15T09:38:11.560Z"
+    },
+    {
+      "mapping_id": "9f69d0ac-1995-4403-8351-3e42123aa82c",
+      "mentor_id": "3508d52d-f6fc-4c4e-ade4-94e62692ca42",
+      "mentee_id": "c754868a-e21c-447b-83ac-919003fd9b03",
+      "title": "Milestone Review: Enterprise Cloud Patterns & Infrastructure as Code",
+      "session_type": "virtual",
+      "scheduled_at": "2026-09-17T10:20:28.858Z",
+      "status": "scheduled",
+      "id": "2ec0c911-4783-4931-8e68-3a168e274544",
+      "created_at": "2026-09-15T10:20:28.879Z"
+    },
+    {
+      "mapping_id": "56c3753f-80ff-4bdf-ba53-105a6c2db382",
+      "mentor_id": "3508d52d-f6fc-4c4e-ade4-94e62692ca42",
+      "mentee_id": "8e2d9b91-1199-4120-a62e-d2b978110079",
+      "title": "Milestone Review: Enterprise Cloud Patterns & Infrastructure as Code",
+      "session_type": "virtual",
+      "scheduled_at": "2026-09-17T10:34:08.419Z",
+      "status": "scheduled",
+      "id": "359daf16-b675-46a0-93d5-2fa94e2041f1",
+      "created_at": "2026-09-15T10:34:08.422Z"
     }
   ],
   "mentorship_goals": [
@@ -2738,11 +3321,92 @@
       "id": "173d09aa-f2d8-424e-985d-4b506bbbc7c0",
       "created_at": "2026-09-15T09:38:11.517Z",
       "updated_at": "2026-09-15T09:38:11.541Z"
+    },
+    {
+      "mapping_id": "9f69d0ac-1995-4403-8351-3e42123aa82c",
+      "title": "Achieve Production Cloud Deployment on GovTech Stack",
+      "description": "Implement automated CI/CD pipeline and achieve 99.9% uptime on staging.",
+      "target_date": "2026-11-30",
+      "status": "in_progress",
+      "created_by": "3508d52d-f6fc-4c4e-ade4-94e62692ca42",
+      "id": "d51277c2-6730-44b4-8b2f-af385c9bc69c",
+      "created_at": "2026-09-15T10:20:28.818Z",
+      "updated_at": "2026-09-15T10:20:28.829Z"
+    },
+    {
+      "mapping_id": "56c3753f-80ff-4bdf-ba53-105a6c2db382",
+      "title": "Achieve Production Cloud Deployment on GovTech Stack",
+      "description": "Implement automated CI/CD pipeline and achieve 99.9% uptime on staging.",
+      "target_date": "2026-11-30",
+      "status": "in_progress",
+      "created_by": "3508d52d-f6fc-4c4e-ade4-94e62692ca42",
+      "id": "d6185335-1bd2-4b09-8464-f101f385b6d4",
+      "created_at": "2026-09-15T10:34:08.370Z",
+      "updated_at": "2026-09-15T10:34:08.383Z"
     }
   ],
-  "mentorship_listings": [],
-  "mentorship_requests": [],
-  "mentor_ratings": [],
+  "mentorship_listings": [
+    {
+      "user_id": "3508d52d-f6fc-4c4e-ade4-94e62692ca42",
+      "listing_type": "mentorship",
+      "title": "Executive Software Architecture & Cloud Career Guidance",
+      "description": "Structured 12-week one-on-one mentorship for high-potential engineering graduates in Jigawa.",
+      "category": "ICT & Technology",
+      "status": "open",
+      "id": "d8d20f66-f202-42dc-81db-0661cd80f47f",
+      "created_at": "2026-09-15T10:20:28.761Z"
+    },
+    {
+      "user_id": "3508d52d-f6fc-4c4e-ade4-94e62692ca42",
+      "listing_type": "mentorship",
+      "title": "Executive Software Architecture & Cloud Career Guidance",
+      "description": "Structured 12-week one-on-one mentorship for high-potential engineering graduates in Jigawa.",
+      "category": "ICT & Technology",
+      "status": "open",
+      "id": "98ce509d-a05c-4fc1-a46a-2d28ad4c6f1c",
+      "created_at": "2026-09-15T10:34:08.235Z"
+    }
+  ],
+  "mentorship_requests": [
+    {
+      "from_user_id": "c754868a-e21c-447b-83ac-919003fd9b03",
+      "to_user_id": "3508d52d-f6fc-4c4e-ade4-94e62692ca42",
+      "listing_id": "d8d20f66-f202-42dc-81db-0661cd80f47f",
+      "message": "I would like your guidance on mastering large-scale cloud systems for public administration.",
+      "status": "accepted",
+      "id": "f4cfa7db-fec7-45f4-a325-ddc779ee91a3",
+      "created_at": "2026-09-15T10:20:28.779Z"
+    },
+    {
+      "from_user_id": "8e2d9b91-1199-4120-a62e-d2b978110079",
+      "to_user_id": "3508d52d-f6fc-4c4e-ade4-94e62692ca42",
+      "listing_id": "98ce509d-a05c-4fc1-a46a-2d28ad4c6f1c",
+      "message": "I would like your guidance on mastering large-scale cloud systems for public administration.",
+      "status": "accepted",
+      "id": "dc37069c-3def-4e7b-a7de-a2a87879dad9",
+      "created_at": "2026-09-15T10:34:08.272Z"
+    }
+  ],
+  "mentor_ratings": [
+    {
+      "mentor_id": "3508d52d-f6fc-4c4e-ade4-94e62692ca42",
+      "mentee_id": "c754868a-e21c-447b-83ac-919003fd9b03",
+      "mapping_id": "9f69d0ac-1995-4403-8351-3e42123aa82c",
+      "rating": 5,
+      "feedback": "Exceptional mentor with profound knowledge of enterprise system design and civic tech.",
+      "id": "f44401b1-78ab-43c7-880c-8c35938d8fc4",
+      "created_at": "2026-09-15T10:20:28.936Z"
+    },
+    {
+      "mentor_id": "3508d52d-f6fc-4c4e-ade4-94e62692ca42",
+      "mentee_id": "8e2d9b91-1199-4120-a62e-d2b978110079",
+      "mapping_id": "56c3753f-80ff-4bdf-ba53-105a6c2db382",
+      "rating": 5,
+      "feedback": "Exceptional mentor with profound knowledge of enterprise system design and civic tech.",
+      "id": "c13a6b2d-9459-4ebc-b835-afc9ab616606",
+      "created_at": "2026-09-15T10:34:08.493Z"
+    }
+  ],
   "courses": [
     {
       "id": "619f5349-cc46-43fe-be5f-922eacd69397",
@@ -2851,6 +3515,34 @@
       "is_published": true,
       "id": "bd8b6505-f617-48b5-b725-12368ad92e13",
       "created_at": "2026-09-15T09:38:11.178Z"
+    },
+    {
+      "instructor_id": "c91e6031-b411-4c0c-928d-07f84787d0c5",
+      "title": "Full-Stack Modern Cloud Engineering for Northern Youth",
+      "description": "Complete hands-on curriculum covering modern web APIs, containerization, and public sector software.",
+      "category": "Information Technology",
+      "level": "Intermediate",
+      "duration": "10 weeks",
+      "is_free": false,
+      "price": 25000,
+      "currency": "NGN",
+      "is_published": true,
+      "id": "1412bb57-6289-4667-aff1-b274f8323828",
+      "created_at": "2026-09-15T10:20:28.597Z"
+    },
+    {
+      "instructor_id": "c91e6031-b411-4c0c-928d-07f84787d0c5",
+      "title": "Full-Stack Modern Cloud Engineering for Northern Youth",
+      "description": "Complete hands-on curriculum covering modern web APIs, containerization, and public sector software.",
+      "category": "Information Technology",
+      "level": "Intermediate",
+      "duration": "10 weeks",
+      "is_free": false,
+      "price": 25000,
+      "currency": "NGN",
+      "is_published": true,
+      "id": "291e4a6c-a3f2-44d8-baf4-1d23e2abbd42",
+      "created_at": "2026-09-15T10:34:07.838Z"
     }
   ],
   "lessons": [
@@ -2911,9 +3603,52 @@
       "order_index": 1,
       "id": "628850dd-82f2-4c75-8610-c813548dc45d",
       "created_at": "2026-09-15T09:38:11.192Z"
+    },
+    {
+      "course_id": "1412bb57-6289-4667-aff1-b274f8323828",
+      "title": "Module 1: Resilient Cloud Architecture & Data Security",
+      "content": "Comprehensive lesson on zero-downtime deployment, secure authentication, and data integrity.",
+      "video_url": "https://cdn.jconnect.gov.ng/lessons/module1_cloud_arch.mp4",
+      "duration": "60 mins",
+      "order_index": 1,
+      "id": "f545c87b-32a1-4ea7-b1a2-adef1a251ceb",
+      "created_at": "2026-09-15T10:20:28.604Z"
+    },
+    {
+      "course_id": "291e4a6c-a3f2-44d8-baf4-1d23e2abbd42",
+      "title": "Module 1: Resilient Cloud Architecture & Data Security",
+      "content": "Comprehensive lesson on zero-downtime deployment, secure authentication, and data integrity.",
+      "video_url": "https://cdn.jconnect.gov.ng/lessons/module1_cloud_arch.mp4",
+      "duration": "60 mins",
+      "order_index": 1,
+      "id": "70bf6d21-ed94-4e82-93dc-49fb172cf848",
+      "created_at": "2026-09-15T10:34:07.853Z"
     }
   ],
-  "course_materials": [],
+  "course_materials": [
+    {
+      "course_id": "1412bb57-6289-4667-aff1-b274f8323828",
+      "lesson_id": "f545c87b-32a1-4ea7-b1a2-adef1a251ceb",
+      "title": "Cloud Architecture & DevOps Handbook PDF",
+      "file_url": "https://cdn.jconnect.gov.ng/materials/cloud_handbook.pdf",
+      "file_type": "application/pdf",
+      "file_size": 4500000,
+      "order_index": 1,
+      "id": "95109e62-de26-4446-a880-bd9542bd8796",
+      "created_at": "2026-09-15T10:20:28.621Z"
+    },
+    {
+      "course_id": "291e4a6c-a3f2-44d8-baf4-1d23e2abbd42",
+      "lesson_id": "70bf6d21-ed94-4e82-93dc-49fb172cf848",
+      "title": "Cloud Architecture & DevOps Handbook PDF",
+      "file_url": "https://cdn.jconnect.gov.ng/materials/cloud_handbook.pdf",
+      "file_type": "application/pdf",
+      "file_size": 4500000,
+      "order_index": 1,
+      "id": "ea93076b-c1bf-4617-a5b1-ab49a125a51c",
+      "created_at": "2026-09-15T10:34:07.912Z"
+    }
+  ],
   "enrollments": [
     {
       "user_id": "48d316cc-672a-47b3-a903-b6bdf31bf74c",
@@ -2954,6 +3689,26 @@
       "created_at": "2026-09-15T09:38:11.227Z",
       "completed_at": "2026-09-15T09:38:11.390Z",
       "updated_at": "2026-09-15T09:38:11.405Z"
+    },
+    {
+      "user_id": "c754868a-e21c-447b-83ac-919003fd9b03",
+      "course_id": "1412bb57-6289-4667-aff1-b274f8323828",
+      "progress": 100,
+      "completed": true,
+      "id": "7a18561b-18e3-40bc-b58d-ec704e07be21",
+      "created_at": "2026-09-15T10:20:28.628Z",
+      "completed_at": "2026-09-15T10:20:28.667Z",
+      "updated_at": "2026-09-15T10:20:28.687Z"
+    },
+    {
+      "user_id": "8e2d9b91-1199-4120-a62e-d2b978110079",
+      "course_id": "291e4a6c-a3f2-44d8-baf4-1d23e2abbd42",
+      "progress": 100,
+      "completed": true,
+      "id": "3e99c630-0a8f-4de5-8fdf-0947bc7d35af",
+      "created_at": "2026-09-15T10:34:07.954Z",
+      "completed_at": "2026-09-15T10:34:08.061Z",
+      "updated_at": "2026-09-15T10:34:08.091Z"
     }
   ],
   "lesson_completions": [
@@ -2984,6 +3739,20 @@
       "course_id": "bd8b6505-f617-48b5-b725-12368ad92e13",
       "id": "4b49651f-4102-47f8-8341-eb96204eab6e",
       "created_at": "2026-09-15T09:38:11.383Z"
+    },
+    {
+      "user_id": "c754868a-e21c-447b-83ac-919003fd9b03",
+      "course_id": "1412bb57-6289-4667-aff1-b274f8323828",
+      "lesson_id": "f545c87b-32a1-4ea7-b1a2-adef1a251ceb",
+      "id": "b7bf0938-886a-4271-a10d-0e9a0d569e41",
+      "created_at": "2026-09-15T10:20:28.644Z"
+    },
+    {
+      "user_id": "8e2d9b91-1199-4120-a62e-d2b978110079",
+      "course_id": "291e4a6c-a3f2-44d8-baf4-1d23e2abbd42",
+      "lesson_id": "70bf6d21-ed94-4e82-93dc-49fb172cf848",
+      "id": "563d306c-f5bc-4a88-b061-d8ab18a37d33",
+      "created_at": "2026-09-15T10:34:07.974Z"
     }
   ],
   "certificates": [
@@ -3026,6 +3795,26 @@
       "issued_by": "Jigawa State Human Capital Development Board",
       "id": "6b7ee8d5-e1e2-4a6b-9a83-4e400f254343",
       "created_at": "2026-09-15T09:38:11.426Z"
+    },
+    {
+      "user_id": "c754868a-e21c-447b-83ac-919003fd9b03",
+      "course_id": "1412bb57-6289-4667-aff1-b274f8323828",
+      "enrollment_id": "7a18561b-18e3-40bc-b58d-ec704e07be21",
+      "certificate_number": "JCON-CERT-1789467628693",
+      "issued_by": "Jigawa State Human Capital Development Board",
+      "qr_verification_url": "http://127.0.0.1:5055/verify-certificate/JCON-CERT-1789467628693",
+      "id": "2508c43f-235b-4812-8331-70f09183b289",
+      "created_at": "2026-09-15T10:20:28.711Z"
+    },
+    {
+      "user_id": "8e2d9b91-1199-4120-a62e-d2b978110079",
+      "course_id": "291e4a6c-a3f2-44d8-baf4-1d23e2abbd42",
+      "enrollment_id": "3e99c630-0a8f-4de5-8fdf-0947bc7d35af",
+      "certificate_number": "JCON-CERT-1789468448104",
+      "issued_by": "Jigawa State Human Capital Development Board",
+      "qr_verification_url": "http://127.0.0.1:5055/verify-certificate/JCON-CERT-1789468448104",
+      "id": "1c2457e2-5fb2-4a27-aae7-2c74870ab0a7",
+      "created_at": "2026-09-15T10:34:08.117Z"
     }
   ],
   "quizzes": [
@@ -3064,6 +3853,24 @@
       "created_by": "cf91da06-b43d-4d19-8a6c-94046f4a1402",
       "id": "fd6b0eb6-8a1a-479e-9336-f28cf2448677",
       "created_at": "2026-09-15T09:38:10.975Z"
+    },
+    {
+      "title": "Jigawa Civil Service Aptitude & Digital Readiness Examination 2026",
+      "description": "Standardized assessment for all public service and tech-cadre recruits.",
+      "pass_score": 75,
+      "time_limit_minutes": 30,
+      "created_by": "cf91da06-b43d-4d19-8a6c-94046f4a1402",
+      "id": "e61e1140-85f2-4c92-bce7-57a84f6707a9",
+      "created_at": "2026-09-15T10:20:28.470Z"
+    },
+    {
+      "title": "Jigawa Civil Service Aptitude & Digital Readiness Examination 2026",
+      "description": "Standardized assessment for all public service and tech-cadre recruits.",
+      "pass_score": 75,
+      "time_limit_minutes": 30,
+      "created_by": "cf91da06-b43d-4d19-8a6c-94046f4a1402",
+      "id": "ba014bfc-e4e8-461f-8bcc-4619678725a6",
+      "created_at": "2026-09-15T10:34:06.993Z"
     }
   ],
   "quiz_questions": [
@@ -3174,6 +3981,60 @@
       "order_index": 3,
       "id": "e5042de4-e4b9-40a8-8cd3-5621001fca82",
       "created_at": "2026-09-15T09:38:11.056Z"
+    },
+    {
+      "quiz_id": "e61e1140-85f2-4c92-bce7-57a84f6707a9",
+      "question": "What is the administrative capital of Jigawa State?",
+      "options": "[\"Hadejia\",\"Dutse\",\"Kazaure\",\"Gumel\"]",
+      "correct_answer": 1,
+      "order_index": 1,
+      "id": "d4ec1696-2814-4ac7-9b98-22a6cc3f7b8e",
+      "created_at": "2026-09-15T10:20:28.478Z"
+    },
+    {
+      "quiz_id": "e61e1140-85f2-4c92-bce7-57a84f6707a9",
+      "question": "Which relational database is employed for persistent state in J-Connect?",
+      "options": "[\"MongoDB\",\"MySQL 8.0+\",\"Cassandra\",\"CouchDB\"]",
+      "correct_answer": 1,
+      "order_index": 2,
+      "id": "053a1ab9-4b5f-4d51-a58f-630e4cf180a5",
+      "created_at": "2026-09-15T10:20:28.507Z"
+    },
+    {
+      "quiz_id": "e61e1140-85f2-4c92-bce7-57a84f6707a9",
+      "question": "How many Local Government Areas (LGAs) comprise Jigawa State?",
+      "options": "[\"21\",\"25\",\"27\",\"30\"]",
+      "correct_answer": 2,
+      "order_index": 3,
+      "id": "439a8c28-69b8-4b6e-a06d-9e612887fc78",
+      "created_at": "2026-09-15T10:20:28.527Z"
+    },
+    {
+      "quiz_id": "ba014bfc-e4e8-461f-8bcc-4619678725a6",
+      "question": "What is the administrative capital of Jigawa State?",
+      "options": "[\"Hadejia\",\"Dutse\",\"Kazaure\",\"Gumel\"]",
+      "correct_answer": 1,
+      "order_index": 1,
+      "id": "650550c3-cbdb-4196-beb4-c88104715ccb",
+      "created_at": "2026-09-15T10:34:07.044Z"
+    },
+    {
+      "quiz_id": "ba014bfc-e4e8-461f-8bcc-4619678725a6",
+      "question": "Which relational database is employed for persistent state in J-Connect?",
+      "options": "[\"MongoDB\",\"MySQL 8.0+\",\"Cassandra\",\"CouchDB\"]",
+      "correct_answer": 1,
+      "order_index": 2,
+      "id": "e4f08637-93f5-4616-ba9c-aaa65f4a01cb",
+      "created_at": "2026-09-15T10:34:07.105Z"
+    },
+    {
+      "quiz_id": "ba014bfc-e4e8-461f-8bcc-4619678725a6",
+      "question": "How many Local Government Areas (LGAs) comprise Jigawa State?",
+      "options": "[\"21\",\"25\",\"27\",\"30\"]",
+      "correct_answer": 2,
+      "order_index": 3,
+      "id": "4dcb6a1f-9041-4923-afbb-af187b4fbbee",
+      "created_at": "2026-09-15T10:34:07.257Z"
     }
   ],
   "quiz_attempts": [
@@ -3212,6 +4073,24 @@
       "answers": "{\"fa36a04c-2c36-4a7d-a6e8-a16ad93f888b\":1,\"70994ee8-5499-4f1b-8ad5-3a56658a4c74\":1,\"e5042de4-e4b9-40a8-8cd3-5621001fca82\":2}",
       "id": "4a01a4ad-bd5e-40fa-8154-7fc847e5fd15",
       "created_at": "2026-09-15T09:38:11.125Z"
+    },
+    {
+      "quiz_id": "e61e1140-85f2-4c92-bce7-57a84f6707a9",
+      "user_id": "c754868a-e21c-447b-83ac-919003fd9b03",
+      "score": 100,
+      "passed": true,
+      "answers": "{\"d4ec1696-2814-4ac7-9b98-22a6cc3f7b8e\":1,\"053a1ab9-4b5f-4d51-a58f-630e4cf180a5\":1,\"439a8c28-69b8-4b6e-a06d-9e612887fc78\":2}",
+      "id": "5f8d2958-b386-4425-a2ac-ad0f10468b87",
+      "created_at": "2026-09-15T10:20:28.576Z"
+    },
+    {
+      "quiz_id": "ba014bfc-e4e8-461f-8bcc-4619678725a6",
+      "user_id": "8e2d9b91-1199-4120-a62e-d2b978110079",
+      "score": 100,
+      "passed": true,
+      "answers": "{\"650550c3-cbdb-4196-beb4-c88104715ccb\":1,\"e4f08637-93f5-4616-ba9c-aaa65f4a01cb\":1,\"4dcb6a1f-9041-4923-afbb-af187b4fbbee\":2}",
+      "id": "7c350b6d-1199-4350-9048-ba8ab4618e77",
+      "created_at": "2026-09-15T10:34:07.528Z"
     }
   ],
   "discussion_posts": [
@@ -3282,11 +4161,110 @@
       "content": "Use pooled connections with keep-alive limits and transparent failover as implemented in J-Connect!",
       "id": "48f9e09e-d311-4d77-aab6-3ac7d1f61124",
       "created_at": "2026-09-15T09:38:11.325Z"
+    },
+    {
+      "course_id": "1412bb57-6289-4667-aff1-b274f8323828",
+      "lesson_id": "f545c87b-32a1-4ea7-b1a2-adef1a251ceb",
+      "user_id": "c754868a-e21c-447b-83ac-919003fd9b03",
+      "content": "What is the recommended disaster recovery strategy for distributed state data nodes?",
+      "id": "fa2d2b09-7d63-428f-8234-2c0bd164e555",
+      "created_at": "2026-09-15T10:20:28.652Z"
+    },
+    {
+      "course_id": "1412bb57-6289-4667-aff1-b274f8323828",
+      "lesson_id": "f545c87b-32a1-4ea7-b1a2-adef1a251ceb",
+      "user_id": "c91e6031-b411-4c0c-928d-07f84787d0c5",
+      "parent_id": "fa2d2b09-7d63-428f-8234-2c0bd164e555",
+      "content": "Employ dual-region replication with automatic failover and point-in-time recovery snapshots.",
+      "id": "c26b9b06-7cac-448c-be62-1ce1975d4b89",
+      "created_at": "2026-09-15T10:20:28.661Z"
+    },
+    {
+      "course_id": "291e4a6c-a3f2-44d8-baf4-1d23e2abbd42",
+      "lesson_id": "70bf6d21-ed94-4e82-93dc-49fb172cf848",
+      "user_id": "8e2d9b91-1199-4120-a62e-d2b978110079",
+      "content": "What is the recommended disaster recovery strategy for distributed state data nodes?",
+      "id": "dcf829f5-ef69-44f7-aafd-35556822f3ef",
+      "created_at": "2026-09-15T10:34:07.990Z"
+    },
+    {
+      "course_id": "291e4a6c-a3f2-44d8-baf4-1d23e2abbd42",
+      "lesson_id": "70bf6d21-ed94-4e82-93dc-49fb172cf848",
+      "user_id": "c91e6031-b411-4c0c-928d-07f84787d0c5",
+      "parent_id": "dcf829f5-ef69-44f7-aafd-35556822f3ef",
+      "content": "Employ dual-region replication with automatic failover and point-in-time recovery snapshots.",
+      "id": "fea28d2a-d1b6-437c-a2c7-2c5ad4a1a849",
+      "created_at": "2026-09-15T10:34:08.033Z"
     }
   ],
-  "group_chatrooms": [],
-  "chatroom_members": [],
-  "chatroom_messages": [],
+  "group_chatrooms": [
+    {
+      "name": "Dutse Tech & Cloud Engineers Guild",
+      "description": "Collaborative technical community for Jigawa State software and cloud engineers.",
+      "topic": "Cloud Infrastructure & Engineering",
+      "created_by": "9ba8f72b-c8ac-4cf4-971f-413fa9d0dbf7",
+      "mentor_id": "3508d52d-f6fc-4c4e-ade4-94e62692ca42",
+      "is_active": true,
+      "id": "0f02f7e9-e710-4e95-91f1-bf7f1a87f5b9",
+      "created_at": "2026-09-15T10:20:28.963Z"
+    },
+    {
+      "name": "Dutse Tech & Cloud Engineers Guild",
+      "description": "Collaborative technical community for Jigawa State software and cloud engineers.",
+      "topic": "Cloud Infrastructure & Engineering",
+      "created_by": "9ba8f72b-c8ac-4cf4-971f-413fa9d0dbf7",
+      "mentor_id": "3508d52d-f6fc-4c4e-ade4-94e62692ca42",
+      "is_active": true,
+      "id": "01c9a8ff-b407-41f3-adf8-a96915ccde1f",
+      "created_at": "2026-09-15T10:34:08.522Z"
+    }
+  ],
+  "chatroom_members": [
+    {
+      "chatroom_id": "0f02f7e9-e710-4e95-91f1-bf7f1a87f5b9",
+      "user_id": "9ba8f72b-c8ac-4cf4-971f-413fa9d0dbf7",
+      "id": "5335eace-01cc-4f73-88e4-f002b77dca6d",
+      "created_at": "2026-09-15T10:20:28.994Z"
+    },
+    {
+      "chatroom_id": "0f02f7e9-e710-4e95-91f1-bf7f1a87f5b9",
+      "user_id": "c754868a-e21c-447b-83ac-919003fd9b03",
+      "id": "c63382a4-6a67-4681-a5a2-f73f1125943e",
+      "created_at": "2026-09-15T10:20:29.012Z"
+    },
+    {
+      "chatroom_id": "01c9a8ff-b407-41f3-adf8-a96915ccde1f",
+      "user_id": "9ba8f72b-c8ac-4cf4-971f-413fa9d0dbf7",
+      "id": "2f688c0a-8d36-438a-be5e-9aeb3e467726",
+      "created_at": "2026-09-15T10:34:08.545Z"
+    },
+    {
+      "chatroom_id": "01c9a8ff-b407-41f3-adf8-a96915ccde1f",
+      "user_id": "8e2d9b91-1199-4120-a62e-d2b978110079",
+      "id": "aab2b65e-c5ea-47fd-9b86-dc0b689cc3ff",
+      "created_at": "2026-09-15T10:34:08.587Z"
+    }
+  ],
+  "chatroom_messages": [
+    {
+      "chatroom_id": "0f02f7e9-e710-4e95-91f1-bf7f1a87f5b9",
+      "user_id": "c754868a-e21c-447b-83ac-919003fd9b03",
+      "content": "Hello everyone! Excited to collaborate on state-wide civic tech initiatives.",
+      "file_name": "cloud_architecture_overview.pdf",
+      "file_url": "https://cdn.jconnect.gov.ng/chat/cloud_architecture_overview.pdf",
+      "id": "8a39faee-309f-4b7c-aa50-d52b8c5b8963",
+      "created_at": "2026-09-15T10:20:29.039Z"
+    },
+    {
+      "chatroom_id": "01c9a8ff-b407-41f3-adf8-a96915ccde1f",
+      "user_id": "8e2d9b91-1199-4120-a62e-d2b978110079",
+      "content": "Hello everyone! Excited to collaborate on state-wide civic tech initiatives.",
+      "file_name": "cloud_architecture_overview.pdf",
+      "file_url": "https://cdn.jconnect.gov.ng/chat/cloud_architecture_overview.pdf",
+      "id": "1bc00642-a344-4b26-8731-8cd641a95601",
+      "created_at": "2026-09-15T10:34:08.602Z"
+    }
+  ],
   "messages": [
     {
       "sender_id": "3508d52d-f6fc-4c4e-ade4-94e62692ca42",
@@ -3343,9 +4321,58 @@
       "content": "Thank you mentor! I have reviewed the goals and initiated our milestone architecture.",
       "id": "8981c180-dd6d-4e0e-90c2-e838efbc4b80",
       "created_at": "2026-09-15T09:38:11.630Z"
+    },
+    {
+      "sender_id": "3508d52d-f6fc-4c4e-ade4-94e62692ca42",
+      "receiver_id": "c754868a-e21c-447b-83ac-919003fd9b03",
+      "content": "Welcome to the Trailblazer mentorship cohort! Please review the infrastructure blueprint.",
+      "id": "6d60e270-8d1d-4131-8448-1d83eeba5719",
+      "created_at": "2026-09-15T10:20:28.893Z"
+    },
+    {
+      "sender_id": "c754868a-e21c-447b-83ac-919003fd9b03",
+      "receiver_id": "3508d52d-f6fc-4c4e-ade4-94e62692ca42",
+      "content": "Thank you mentor! Blueprint received and staging environment configured.",
+      "id": "72ad3443-93a7-46cb-8497-1f40881a40a3",
+      "created_at": "2026-09-15T10:20:28.910Z"
+    },
+    {
+      "sender_id": "3508d52d-f6fc-4c4e-ade4-94e62692ca42",
+      "receiver_id": "8e2d9b91-1199-4120-a62e-d2b978110079",
+      "content": "Welcome to the Trailblazer mentorship cohort! Please review the infrastructure blueprint.",
+      "id": "b826aa8c-e9f2-4fe4-ab4b-ae3812ca8115",
+      "created_at": "2026-09-15T10:34:08.439Z"
+    },
+    {
+      "sender_id": "8e2d9b91-1199-4120-a62e-d2b978110079",
+      "receiver_id": "3508d52d-f6fc-4c4e-ade4-94e62692ca42",
+      "content": "Thank you mentor! Blueprint received and staging environment configured.",
+      "id": "e0b6d694-0fe7-404a-aec5-8000eaea7b1d",
+      "created_at": "2026-09-15T10:34:08.471Z"
     }
   ],
-  "notifications": [],
+  "notifications": [
+    {
+      "user_id": "c754868a-e21c-447b-83ac-919003fd9b03",
+      "title": "Employment Offer Extended",
+      "message": "Congratulations! Jigawa Digital Infrastructure Agency has issued your formal job offer.",
+      "type": "success",
+      "link": "/job-seeker",
+      "is_read": false,
+      "id": "c5869648-acb5-44cf-baf6-1977678a2224",
+      "created_at": "2026-09-15T10:20:29.224Z"
+    },
+    {
+      "user_id": "8e2d9b91-1199-4120-a62e-d2b978110079",
+      "title": "Employment Offer Extended",
+      "message": "Congratulations! Jigawa Digital Infrastructure Agency has issued your formal job offer.",
+      "type": "success",
+      "link": "/job-seeker",
+      "is_read": false,
+      "id": "b7dd49bc-c995-4045-879f-9c5eddbbbd20",
+      "created_at": "2026-09-15T10:34:08.925Z"
+    }
+  ],
   "announcements": [
     {
       "id": "dc15130d-d59d-4255-855e-3779157081e8",
@@ -3406,6 +4433,26 @@
       "created_by": "f1e406d3-77b5-4c2f-a1ed-85032b5e6730",
       "id": "1b1da764-aad3-4d98-b5b4-71d60fff3d39",
       "created_at": "2026-09-15T09:38:12.144Z"
+    },
+    {
+      "title": "State Digital Talent Initiative 2026 Launched",
+      "content": "Governor announces state-wide sponsorship for all tech and agricultural certifications on J-Connect.",
+      "priority": "urgent",
+      "target_role": "all",
+      "is_active": true,
+      "created_by": "f1e406d3-77b5-4c2f-a1ed-85032b5e6730",
+      "id": "41d553a2-6969-46a9-bc5e-a380e39622e6",
+      "created_at": "2026-09-15T10:20:29.353Z"
+    },
+    {
+      "title": "State Digital Talent Initiative 2026 Launched",
+      "content": "Governor announces state-wide sponsorship for all tech and agricultural certifications on J-Connect.",
+      "priority": "urgent",
+      "target_role": "all",
+      "is_active": true,
+      "created_by": "f1e406d3-77b5-4c2f-a1ed-85032b5e6730",
+      "id": "01f690d2-b04a-4c0a-ac2c-0678a99060eb",
+      "created_at": "2026-09-15T10:34:09.088Z"
     }
   ],
   "video_meetings": [
@@ -3448,9 +4495,48 @@
       "status": "scheduled",
       "id": "f2fe8c56-e313-464c-83bb-77e211853872",
       "created_at": "2026-09-15T09:38:10.897Z"
+    },
+    {
+      "title": "Technical Video Interview: Cloud Solutions Architect",
+      "room_name": "jcon-interview-04c2479d-0bae-4bd1-9d0f-d6952d259dec",
+      "meeting_type": "interview",
+      "related_id": "04c2479d-0bae-4bd1-9d0f-d6952d259dec",
+      "created_by": "67fa0c7c-a3cd-4687-b642-c0d19b93288b",
+      "participants": "[\"c754868a-e21c-447b-83ac-919003fd9b03\",\"67fa0c7c-a3cd-4687-b642-c0d19b93288b\"]",
+      "scheduled_at": "2026-09-16T10:20:28.363Z",
+      "status": "scheduled",
+      "id": "8c60b71b-adb7-4f7a-ae83-e94a977fd6f5",
+      "created_at": "2026-09-15T10:20:28.383Z"
+    },
+    {
+      "title": "Technical Video Interview: Cloud Solutions Architect",
+      "room_name": "jcon-interview-1677c306-e9cf-4cb8-b466-dddd054d9843",
+      "meeting_type": "interview",
+      "related_id": "1677c306-e9cf-4cb8-b466-dddd054d9843",
+      "created_by": "67fa0c7c-a3cd-4687-b642-c0d19b93288b",
+      "participants": "[\"8e2d9b91-1199-4120-a62e-d2b978110079\",\"67fa0c7c-a3cd-4687-b642-c0d19b93288b\"]",
+      "scheduled_at": "2026-09-16T10:34:06.283Z",
+      "status": "scheduled",
+      "id": "16e829a5-3679-4933-a728-faa81002dea8",
+      "created_at": "2026-09-15T10:34:06.294Z"
     }
   ],
-  "skill_endorsements": [],
+  "skill_endorsements": [
+    {
+      "endorser_id": "3508d52d-f6fc-4c4e-ade4-94e62692ca42",
+      "endorsee_id": "c754868a-e21c-447b-83ac-919003fd9b03",
+      "skill": "Cloud Architecture & Distributed Systems",
+      "id": "1b8aebf3-2886-4032-acff-14d1498bcd1b",
+      "created_at": "2026-09-15T10:20:29.116Z"
+    },
+    {
+      "endorser_id": "3508d52d-f6fc-4c4e-ade4-94e62692ca42",
+      "endorsee_id": "8e2d9b91-1199-4120-a62e-d2b978110079",
+      "skill": "Cloud Architecture & Distributed Systems",
+      "id": "391c1a63-f52f-411a-869d-48d795718dba",
+      "created_at": "2026-09-15T10:34:08.712Z"
+    }
+  ],
   "portfolio_items": [
     {
       "user_id": "48d316cc-672a-47b3-a903-b6bdf31bf74c",
@@ -3483,6 +4569,24 @@
       "project_url": "https://github.com/jigawa-gov/revenue-system",
       "id": "d803d85b-6c3a-452b-a61a-882258ab7e20",
       "created_at": "2026-09-15T09:38:09.933Z"
+    },
+    {
+      "user_id": "c754868a-e21c-447b-83ac-919003fd9b03",
+      "title": "Jigawa Digital Revenue Management System",
+      "description": "Automated state-wide tax and levy assessment tool built with Node.js and React.",
+      "project_url": "https://github.com/jigawa-gov/revenue-system",
+      "image_url": "https://cdn.jconnect.gov.ng/portfolio/revenue-sys.png",
+      "id": "ab0d9a49-cdfc-4bac-a669-719e3d43e82a",
+      "created_at": "2026-09-15T10:20:27.869Z"
+    },
+    {
+      "user_id": "8e2d9b91-1199-4120-a62e-d2b978110079",
+      "title": "Jigawa Digital Revenue Management System",
+      "description": "Automated state-wide tax and levy assessment tool built with Node.js and React.",
+      "project_url": "https://github.com/jigawa-gov/revenue-system",
+      "image_url": "https://cdn.jconnect.gov.ng/portfolio/revenue-sys.png",
+      "id": "cd584471-54b7-474f-8f3f-82e5a95fcc54",
+      "created_at": "2026-09-15T10:34:05.628Z"
     }
   ],
   "social_posts": [
@@ -3517,6 +4621,24 @@
       "comments_count": 0,
       "id": "f8a1d589-4417-48a2-bf19-7564105e4d3f",
       "created_at": "2026-09-15T09:38:11.676Z"
+    },
+    {
+      "user_id": "f0db5580-ca1b-47d9-8467-eb665097463e",
+      "group_id": "9fb5d809-fd64-4d51-902e-8c5f26a6f6d5",
+      "content": "Celebrating the successful rollout of J-Connect across all 27 LGAs in Jigawa State!",
+      "likes_count": 1,
+      "comments_count": 1,
+      "id": "5cff0f11-fe4a-4f92-8de1-2763b9c7ccde",
+      "created_at": "2026-09-15T10:20:29.132Z"
+    },
+    {
+      "user_id": "f0db5580-ca1b-47d9-8467-eb665097463e",
+      "group_id": "2ceb3508-a1a8-43cb-8072-579f13872f42",
+      "content": "Celebrating the successful rollout of J-Connect across all 27 LGAs in Jigawa State!",
+      "likes_count": 1,
+      "comments_count": 1,
+      "id": "12f89f81-2771-4d3d-84c9-06e462b3a800",
+      "created_at": "2026-09-15T10:34:08.776Z"
     }
   ],
   "social_reactions": [
@@ -3547,6 +4669,20 @@
       "reaction_type": "like",
       "id": "a9e3a61a-bac4-4b8d-8856-8be6ff62cf3b",
       "created_at": "2026-09-15T09:38:11.779Z"
+    },
+    {
+      "user_id": "c754868a-e21c-447b-83ac-919003fd9b03",
+      "post_id": "5cff0f11-fe4a-4f92-8de1-2763b9c7ccde",
+      "reaction_type": "like",
+      "id": "560f33fc-1cdc-4f5f-bfd2-f710f590fdaa",
+      "created_at": "2026-09-15T10:20:29.167Z"
+    },
+    {
+      "user_id": "8e2d9b91-1199-4120-a62e-d2b978110079",
+      "post_id": "12f89f81-2771-4d3d-84c9-06e462b3a800",
+      "reaction_type": "like",
+      "id": "ad8787f0-6f3a-42a5-80aa-a13b38dd7f30",
+      "created_at": "2026-09-15T10:34:08.868Z"
     }
   ],
   "social_comments": [
@@ -3577,12 +4713,92 @@
       "content": "A game changer for youth empowerment and professional verification across Jigawa.",
       "id": "c3bcb180-bff4-4ce3-804f-1f7086951ca9",
       "created_at": "2026-09-15T09:38:11.699Z"
+    },
+    {
+      "user_id": "9ba8f72b-c8ac-4cf4-971f-413fa9d0dbf7",
+      "post_id": "5cff0f11-fe4a-4f92-8de1-2763b9c7ccde",
+      "content": "A game changer for youth empowerment and professional verification across Jigawa.",
+      "id": "8c4eb99e-76a1-4c8b-b283-172d2619e234",
+      "created_at": "2026-09-15T10:20:29.139Z"
+    },
+    {
+      "user_id": "9ba8f72b-c8ac-4cf4-971f-413fa9d0dbf7",
+      "post_id": "12f89f81-2771-4d3d-84c9-06e462b3a800",
+      "content": "A game changer for youth empowerment and professional verification across Jigawa.",
+      "id": "2bc636ee-4442-46e0-9f32-f7080f7a5075",
+      "created_at": "2026-09-15T10:34:08.820Z"
     }
   ],
-  "social_groups": [],
-  "social_group_members": [],
-  "social_follows": [],
-  "activity_feed": [],
+  "social_groups": [
+    {
+      "name": "Jigawa Youth Innovation & Entrepreneurship Circle",
+      "description": "Empowering young leaders across all 27 LGAs through tech, trade, and agribusiness.",
+      "avatar_url": "https://cdn.jconnect.gov.ng/groups/youth-innovation.png",
+      "created_by": "f0db5580-ca1b-47d9-8467-eb665097463e",
+      "is_private": false,
+      "id": "9fb5d809-fd64-4d51-902e-8c5f26a6f6d5",
+      "created_at": "2026-09-15T10:20:29.059Z"
+    },
+    {
+      "name": "Jigawa Youth Innovation & Entrepreneurship Circle",
+      "description": "Empowering young leaders across all 27 LGAs through tech, trade, and agribusiness.",
+      "avatar_url": "https://cdn.jconnect.gov.ng/groups/youth-innovation.png",
+      "created_by": "f0db5580-ca1b-47d9-8467-eb665097463e",
+      "is_private": false,
+      "id": "2ceb3508-a1a8-43cb-8072-579f13872f42",
+      "created_at": "2026-09-15T10:34:08.626Z"
+    }
+  ],
+  "social_group_members": [
+    {
+      "group_id": "9fb5d809-fd64-4d51-902e-8c5f26a6f6d5",
+      "user_id": "c754868a-e21c-447b-83ac-919003fd9b03",
+      "role": "member",
+      "id": "8d2af372-e056-4ce0-b4f1-258eab55ae3b",
+      "created_at": "2026-09-15T10:20:29.085Z"
+    },
+    {
+      "group_id": "2ceb3508-a1a8-43cb-8072-579f13872f42",
+      "user_id": "8e2d9b91-1199-4120-a62e-d2b978110079",
+      "role": "member",
+      "id": "165d5841-afaf-4906-aa94-8a560b216cc0",
+      "created_at": "2026-09-15T10:34:08.644Z"
+    }
+  ],
+  "social_follows": [
+    {
+      "follower_id": "c754868a-e21c-447b-83ac-919003fd9b03",
+      "following_id": "3508d52d-f6fc-4c4e-ade4-94e62692ca42",
+      "id": "16b967e6-49d9-4746-a7b0-a653152b7b2c",
+      "created_at": "2026-09-15T10:20:29.100Z"
+    },
+    {
+      "follower_id": "8e2d9b91-1199-4120-a62e-d2b978110079",
+      "following_id": "3508d52d-f6fc-4c4e-ade4-94e62692ca42",
+      "id": "8a919971-51c7-42cb-bd62-e999626dd47a",
+      "created_at": "2026-09-15T10:34:08.670Z"
+    }
+  ],
+  "activity_feed": [
+    {
+      "user_id": "c754868a-e21c-447b-83ac-919003fd9b03",
+      "action": "certificate_earned",
+      "entity_type": "certificate",
+      "entity_id": "JCON-CERT-1789467628693",
+      "metadata": "{\"title\":\"Full-Stack Modern Cloud Engineering for Northern Youth\",\"grade\":\"Distinction\"}",
+      "id": "8c73a82c-84e7-4ed8-a663-021e199a0be1",
+      "created_at": "2026-09-15T10:20:29.319Z"
+    },
+    {
+      "user_id": "8e2d9b91-1199-4120-a62e-d2b978110079",
+      "action": "certificate_earned",
+      "entity_type": "certificate",
+      "entity_id": "JCON-CERT-1789468448104",
+      "metadata": "{\"title\":\"Full-Stack Modern Cloud Engineering for Northern Youth\",\"grade\":\"Distinction\"}",
+      "id": "37f1e20b-3c16-4e6d-9ade-157a74cab74c",
+      "created_at": "2026-09-15T10:34:08.945Z"
+    }
+  ],
   "approval_workflows": [
     {
       "entity_type": "cadre_verification",
@@ -3631,6 +4847,26 @@
       "reviewed_by": "8b12c70d-7be5-4342-b266-19a849eeeaa3",
       "reviewed_at": "2026-09-15T09:38:12.280Z",
       "updated_at": "2026-09-15T09:38:12.280Z"
+    },
+    {
+      "entity_type": "cadre_verification",
+      "entity_id": "c754868a-e21c-447b-83ac-919003fd9b03",
+      "submitted_by": "f1e406d3-77b5-4c2f-a1ed-85032b5e6730",
+      "status": "pending",
+      "notes": "Verification request for Senior Cloud Solutions Architect appointment in GL 12.",
+      "id": "06a22561-6b91-4d64-a237-415ea7f11458",
+      "created_at": "2026-09-15T10:20:29.378Z"
+    },
+    {
+      "entity_type": "cadre_verification",
+      "entity_id": "8e2d9b91-1199-4120-a62e-d2b978110079",
+      "submitted_by": "f1e406d3-77b5-4c2f-a1ed-85032b5e6730",
+      "status": "approved",
+      "notes": "Credentials, CBT score (100%), and degree verified against state database.",
+      "id": "5e8838de-fee3-44a1-9465-5922962eec23",
+      "created_at": "2026-09-15T10:34:09.116Z",
+      "reviewer_id": "8b12c70d-7be5-4342-b266-19a849eeeaa3",
+      "updated_at": "2026-09-15T10:34:09.178Z"
     }
   ],
   "audit_logs": [
@@ -3669,6 +4905,26 @@
       "new_data": "{\"status\":\"approved\",\"reviewer\":\"reviewer@jconnect.gov.ng\"}",
       "id": "3ac406d4-e8c2-4c2c-9542-db73fccef723",
       "created_at": "2026-09-15T09:38:12.299Z"
+    },
+    {
+      "user_id": "f1e406d3-77b5-4c2f-a1ed-85032b5e6730",
+      "action": "EXECUTE_CADRE_APPROVAL",
+      "entity_type": "approval_workflows",
+      "entity_id": "06a22561-6b91-4d64-a237-415ea7f11458",
+      "new_data": "{\"status\":\"approved\",\"reviewer\":\"reviewer@jconnect.gov.ng\"}",
+      "ip_address": "127.0.0.1",
+      "id": "dfbd2f8a-f1c1-4f41-8574-5b5562f11a78",
+      "created_at": "2026-09-15T10:20:29.423Z"
+    },
+    {
+      "user_id": "f1e406d3-77b5-4c2f-a1ed-85032b5e6730",
+      "action": "EXECUTE_CADRE_APPROVAL",
+      "entity_type": "approval_workflows",
+      "entity_id": "5e8838de-fee3-44a1-9465-5922962eec23",
+      "new_data": "{\"status\":\"approved\",\"reviewer\":\"reviewer@jconnect.gov.ng\"}",
+      "ip_address": "127.0.0.1",
+      "id": "b4419a07-10e3-44ab-8cf9-aacd58c88e1c",
+      "created_at": "2026-09-15T10:34:09.227Z"
     }
   ],
   "branding_settings": [
@@ -3687,6 +4943,24 @@
       "primary_color": "#0d5c3a",
       "secondary_color": "#d4a017",
       "created_at": "2026-09-14T22:14:26.299Z"
+    },
+    {
+      "system_name": "J-CONNECT",
+      "tagline": "Jigawa State Unified Human Capital Development & Career Portal",
+      "logo_url": "/logo.png",
+      "primary_color": "#0d5c3a",
+      "secondary_color": "#d4a017",
+      "id": "3df9e967-d0ab-456f-888d-e44945d0fed2",
+      "created_at": "2026-09-15T10:20:29.454Z"
+    },
+    {
+      "system_name": "J-CONNECT",
+      "tagline": "Jigawa State Unified Human Capital Development & Career Portal",
+      "logo_url": "/logo.png",
+      "primary_color": "#0d5c3a",
+      "secondary_color": "#d4a017",
+      "id": "704a3f3e-a834-4ece-9567-cce4dfa45b39",
+      "created_at": "2026-09-15T10:34:09.255Z"
     }
   ]
 }

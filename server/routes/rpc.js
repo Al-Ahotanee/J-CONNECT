@@ -10,7 +10,7 @@ const router = express.Router();
  */
 router.post('/verify_certificate', optionalAuth, async (req, res) => {
   try {
-    const certNumber = (req.body._cert_number || req.body.certNumber || req.body.certificate_number || '').trim();
+    const certNumber = (req.body._cert_number || req.body.cert_number || req.body.certNumber || req.body.certificate_number || '').trim();
     if (!certNumber) {
       return res.status(400).json({ error: 'Certificate number is required' });
     }
@@ -155,14 +155,16 @@ router.post('/has_role', optionalAuth, async (req, res) => {
  */
 router.post('/execute_workflow', optionalAuth, async (req, res) => {
   try {
-    const { workflow_id, status, notes } = req.body;
+    const workflow_id = req.body.workflow_id || req.body._workflow_id;
+    const status = req.body.status || req.body.action;
+    const notes = req.body.notes || req.body.comments;
     if (!workflow_id || !status) {
       return res.status(400).json({ error: 'workflow_id and status required' });
     }
 
     const reviewerId = req.user?.id || null;
     await query(
-      'UPDATE approval_workflows SET status = ?, notes = ?, reviewed_by = ?, reviewed_at = NOW(), updated_at = NOW() WHERE id = ?',
+      'UPDATE approval_workflows SET status = ?, notes = ?, reviewer_id = ?, updated_at = NOW() WHERE id = ?',
       [status, notes || null, reviewerId, workflow_id]
     );
 
