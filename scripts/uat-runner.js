@@ -638,7 +638,7 @@ async function runLiveUAT() {
     const assessorCheck = await request(`/api/data/quiz_attempts?id=eq.${attemptId}`, {
       token: assessorToken,
     });
-    assert('CBT Assessor reviews and verifies candidate score record', assessorCheck.status === 200 && assessorCheck.body?.[0]?.score === 100);
+    assert('CBT Assessor reviews and verifies candidate score record', assessorCheck.status === 200 && Number(assessorCheck.body?.[0]?.score) === 100);
 
     // ------------------------------------------------------------------
     // SUITE 7: Workflow 5 - E-Learning, Monetization, Materials & Certification
@@ -665,7 +665,7 @@ async function runLiveUAT() {
         is_published: true,
       },
     });
-    assert('Course Creator publishes monetized course (NGN 25,000)', courseRes.status === 201 && courseRes.body?.price === 25000);
+    assert('Course Creator publishes monetized course (NGN 25,000)', courseRes.status === 201 && Number(courseRes.body?.price) === 25000);
     const courseId = courseRes.body?.id;
 
     // 2. Creator uploads lesson module
@@ -800,12 +800,13 @@ async function runLiveUAT() {
     const mentorUserId = sessionUsers['mentor@jconnect.gov.ng']?.id || 'mentor-id';
 
     // 1. Mentor Profile Registration
-    const mentorProfRes = await request('/api/data/mentors', {
+    const mentorProfRes = await request('/api/data/mentors?upsert=true', {
       method: 'POST',
       token: mentorToken,
       body: {
         user_id: mentorUserId,
         category: 'ICT & Technology',
+        specialization: 'Cloud Infrastructure & Distributed Systems',
         bio: 'Principal Cloud Architect with 12+ years building enterprise GovTech systems.',
         years_experience: 12,
         max_mentees: 10,

@@ -366,6 +366,27 @@ async function getValidColumnsForTable(table) {
   return null;
 }
 
+function normalizeDocValues(table, doc, reqUser) {
+  if (table === 'courses') {
+    if (!doc.slug && doc.title) {
+      doc.slug = String(doc.title).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') + '-' + uuidv4().substring(0, 8);
+    }
+    if (!doc.instructor_id) {
+      doc.instructor_id = doc.created_by || doc.creator_id || reqUser?.id || 'instructor-default';
+    }
+  } else if (table === 'mentors') {
+    if (!doc.category) {
+      doc.category = doc.specialization || 'General Mentorship';
+    }
+  }
+
+  for (const [k, v] of Object.entries(doc)) {
+    if (typeof v === 'string' && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/.test(v)) {
+      doc[k] = v.replace('T', ' ').replace(/\..+$/, '').replace('Z', '');
+    }
+  }
+}
+
 // ==========================================
 // POST /api/data/:table (Insert or Upsert)
 // ==========================================
@@ -383,6 +404,8 @@ router.post('/:table', optionalAuth, async (req, res) => {
     for (const record of records) {
       const doc = { ...record };
       if (!doc.id) doc.id = uuidv4();
+
+      normalizeDocValues(table, doc, req.user);
 
       // Safe column filter: remove any fields not in MySQL schema
       if (validCols) {
@@ -446,6 +469,12 @@ router.patch('/:table', optionalAuth, async (req, res) => {
 
     const updates = { ...req.body };
     delete updates.id;
+
+    for (const [k, v] of Object.entries(updates)) {
+      if (typeof v === 'string' && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/.test(v)) {
+        updates[k] = v.replace('T', ' ').replace(/\..+$/, '').replace('Z', '');
+      }
+    }
 
     // Safe column filter: remove any fields not in MySQL schema
     const validCols = await getValidColumnsForTable(table);
