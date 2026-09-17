@@ -449,9 +449,16 @@ router.post('/:table', optionalAuth, async (req, res) => {
 
       await query(sql, values);
 
-      // Fetch inserted row
-      const [row] = await query(`SELECT * FROM \`${table}\` WHERE id = ?`, [doc.id]);
-      inserted.push(parseJsonColumns(row));
+      // Fetch inserted or upserted row
+      let row = null;
+      const rows = await query(`SELECT * FROM \`${table}\` WHERE id = ?`, [doc.id]);
+      if (Array.isArray(rows) && rows.length > 0) {
+        row = rows[0];
+      } else if (doc.user_id) {
+        const uRows = await query(`SELECT * FROM \`${table}\` WHERE user_id = ?`, [doc.user_id]);
+        if (Array.isArray(uRows) && uRows.length > 0) row = uRows[0];
+      }
+      inserted.push(parseJsonColumns(row || doc));
     }
 
     if (!Array.isArray(req.body)) {
