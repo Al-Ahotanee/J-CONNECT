@@ -12,6 +12,7 @@
     "uat": "node scripts/uat-runner.js",
     "db:init": "node server/seed.js",
     "db:seed": "node server/seed.js",
+    "db:sync-to-aiven": "node scripts/sync-to-aiven.js",
     "lint": "eslint .",
     "preview": "vite preview",
     "test": "vitest run",
