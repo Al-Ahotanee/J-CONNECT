@@ -300,6 +300,34 @@ export async function syncSnapshotToDatabase() {
     console.log(`[Auto-Sync] Connecting to Aiven/MySQL to synchronize ${tableNames.length} tables from db_data.json...`);
     await query('SET FOREIGN_KEY_CHECKS = 0;');
 
+    // Run safe migrations for any columns that might be missing on previously-created tables
+    const migrations = [
+      { table: 'job_offers', col: 'updated_at', def: 'TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP' },
+      { table: 'mentorship_goals', col: 'updated_at', def: 'TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP' },
+      { table: 'enrollments', col: 'created_at', def: 'TIMESTAMP DEFAULT CURRENT_TIMESTAMP' },
+      { table: 'enrollments', col: 'updated_at', def: 'TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP' },
+      { table: 'lesson_completions', col: 'created_at', def: 'TIMESTAMP DEFAULT CURRENT_TIMESTAMP' },
+      { table: 'certificates', col: 'status', def: "VARCHAR(50) DEFAULT 'issued'" },
+      { table: 'certificates', col: 'created_at', def: 'TIMESTAMP DEFAULT CURRENT_TIMESTAMP' },
+      { table: 'quiz_attempts', col: 'created_at', def: 'TIMESTAMP DEFAULT CURRENT_TIMESTAMP' },
+      { table: 'chatroom_members', col: 'created_at', def: 'TIMESTAMP DEFAULT CURRENT_TIMESTAMP' },
+      { table: 'social_group_members', col: 'created_at', def: 'TIMESTAMP DEFAULT CURRENT_TIMESTAMP' },
+      { table: 'approval_workflows', col: 'reviewed_by', def: 'VARCHAR(36) NULL' },
+      { table: 'approval_workflows', col: 'reviewed_at', def: 'TIMESTAMP NULL' }
+    ];
+
+    for (const m of migrations) {
+      try {
+        const cols = await query(`SHOW COLUMNS FROM \`${m.table}\` LIKE '${m.col}'`);
+        if (!cols || cols.length === 0) {
+          await query(`ALTER TABLE \`${m.table}\` ADD COLUMN \`${m.col}\` ${m.def}`);
+          console.log(`[Auto-Sync] Migrated table \`${m.table}\`: added column \`${m.col}\``);
+        }
+      } catch (err) {
+        // Table might not exist yet or other non-fatal error
+      }
+    }
+
     let syncedCount = 0;
     for (const tableName of tableNames) {
       const rows = snapshotData[tableName];
@@ -313,8 +341,25 @@ export async function syncSnapshotToDatabase() {
         // Table might not exist or error, continue
       }
 
+      // Inspect actual columns from database
+      let validColNames = null;
+      try {
+        const dbCols = await query(`SHOW COLUMNS FROM \`${tableName}\``);
+        if (Array.isArray(dbCols) && dbCols.length > 0) {
+          validColNames = new Set(dbCols.map(c => c.Field));
+        }
+      } catch (err) {
+        // Fallback to row keys if query fails
+      }
+
       const sampleRow = rows[0];
-      const columns = Object.keys(sampleRow);
+      const allRowCols = Object.keys(sampleRow);
+      const columns = validColNames
+        ? allRowCols.filter(c => validColNames.has(c))
+        : allRowCols;
+
+      if (columns.length === 0) continue;
+
       const escapedCols = columns.map(c => `\`${c}\``).join(', ');
       const placeholders = columns.map(() => '?').join(', ');
 

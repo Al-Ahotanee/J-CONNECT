@@ -121,6 +121,34 @@ async function main() {
   // Disable foreign key checks during batch migration for dependency order independence
   await connection.query('SET FOREIGN_KEY_CHECKS = 0;');
 
+  // Run safe migrations for any columns that might be missing on previously-created tables
+  const migrations = [
+    { table: 'job_offers', col: 'updated_at', def: 'TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP' },
+    { table: 'mentorship_goals', col: 'updated_at', def: 'TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP' },
+    { table: 'enrollments', col: 'created_at', def: 'TIMESTAMP DEFAULT CURRENT_TIMESTAMP' },
+    { table: 'enrollments', col: 'updated_at', def: 'TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP' },
+    { table: 'lesson_completions', col: 'created_at', def: 'TIMESTAMP DEFAULT CURRENT_TIMESTAMP' },
+    { table: 'certificates', col: 'status', def: "VARCHAR(50) DEFAULT 'issued'" },
+    { table: 'certificates', col: 'created_at', def: 'TIMESTAMP DEFAULT CURRENT_TIMESTAMP' },
+    { table: 'quiz_attempts', col: 'created_at', def: 'TIMESTAMP DEFAULT CURRENT_TIMESTAMP' },
+    { table: 'chatroom_members', col: 'created_at', def: 'TIMESTAMP DEFAULT CURRENT_TIMESTAMP' },
+    { table: 'social_group_members', col: 'created_at', def: 'TIMESTAMP DEFAULT CURRENT_TIMESTAMP' },
+    { table: 'approval_workflows', col: 'reviewed_by', def: 'VARCHAR(36) NULL' },
+    { table: 'approval_workflows', col: 'reviewed_at', def: 'TIMESTAMP NULL' }
+  ];
+
+  for (const m of migrations) {
+    try {
+      const [cols] = await connection.query(`SHOW COLUMNS FROM \`${m.table}\` LIKE '${m.col}'`);
+      if (!cols || cols.length === 0) {
+        await connection.query(`ALTER TABLE \`${m.table}\` ADD COLUMN \`${m.col}\` ${m.def}`);
+        console.log(`  [Migration] Table \`${m.table}\`: added column \`${m.col}\``);
+      }
+    } catch (err) {
+      // ignore table or column issues
+    }
+  }
+
   for (const tableName of tableNames) {
     const rows = snapshotData[tableName];
     if (!Array.isArray(rows) || rows.length === 0) {
@@ -128,9 +156,25 @@ async function main() {
       continue;
     }
 
-    // Inspect columns from first row
+    // Inspect actual database columns
+    let validColNames = null;
+    try {
+      const [dbCols] = await connection.query(`SHOW COLUMNS FROM \`${tableName}\``);
+      if (Array.isArray(dbCols) && dbCols.length > 0) {
+        validColNames = new Set(dbCols.map(c => c.Field));
+      }
+    } catch (err) {
+      // fallback
+    }
+
     const sampleRow = rows[0];
-    const columns = Object.keys(sampleRow);
+    const allRowCols = Object.keys(sampleRow);
+    const columns = validColNames
+      ? allRowCols.filter(c => validColNames.has(c))
+      : allRowCols;
+
+    if (columns.length === 0) continue;
+
     const escapedCols = columns.map(c => `\`${c}\``).join(', ');
     const placeholders = columns.map(() => '?').join(', ');
 

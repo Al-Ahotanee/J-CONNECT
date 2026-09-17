@@ -126,6 +126,7 @@ CREATE TABLE IF NOT EXISTS job_offers (
   salary_offered VARCHAR(100),
   status VARCHAR(50) DEFAULT 'pending',
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   responded_at TIMESTAMP NULL,
   INDEX idx_offers_user (user_id),
   INDEX idx_offers_job (job_id)
@@ -257,6 +258,7 @@ CREATE TABLE IF NOT EXISTS mentorship_goals (
   completed_at DATETIME NULL,
   created_by VARCHAR(36) NOT NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   INDEX idx_mg_mapping (mapping_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -341,6 +343,8 @@ CREATE TABLE IF NOT EXISTS enrollments (
   progress INT DEFAULT 0,
   completed BOOLEAN DEFAULT FALSE,
   enrolled_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   completed_at DATETIME NULL,
   UNIQUE KEY uq_user_course (user_id, course_id),
   INDEX idx_enrollments_user (user_id)
@@ -352,6 +356,7 @@ CREATE TABLE IF NOT EXISTS lesson_completions (
   lesson_id VARCHAR(36) NOT NULL,
   course_id VARCHAR(36) NOT NULL,
   completed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   UNIQUE KEY uq_user_lesson (user_id, lesson_id),
   INDEX idx_lc_user_course (user_id, course_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -362,9 +367,11 @@ CREATE TABLE IF NOT EXISTS certificates (
   course_id VARCHAR(36) NOT NULL,
   enrollment_id VARCHAR(36),
   certificate_number VARCHAR(100) NOT NULL UNIQUE,
+  status VARCHAR(50) DEFAULT 'issued',
   issued_by VARCHAR(255) DEFAULT 'Jigawa State Human Capital Development',
   qr_verification_url TEXT,
   issued_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   INDEX idx_cert_user (user_id),
   INDEX idx_cert_number (certificate_number)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -406,6 +413,7 @@ CREATE TABLE IF NOT EXISTS quiz_attempts (
   score DECIMAL(5,2) DEFAULT 0.00,
   passed BOOLEAN DEFAULT FALSE,
   completed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   INDEX idx_qa_quiz_user (quiz_id, user_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -437,6 +445,7 @@ CREATE TABLE IF NOT EXISTS chatroom_members (
   chatroom_id VARCHAR(36) NOT NULL,
   user_id VARCHAR(36) NOT NULL,
   joined_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   UNIQUE KEY uq_room_user (chatroom_id, user_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -570,6 +579,7 @@ CREATE TABLE IF NOT EXISTS social_group_members (
   user_id VARCHAR(36) NOT NULL,
   role VARCHAR(50) DEFAULT 'member',
   joined_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   UNIQUE KEY uq_group_user (group_id, user_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -598,8 +608,10 @@ CREATE TABLE IF NOT EXISTS approval_workflows (
   entity_id VARCHAR(36) NOT NULL,
   submitted_by VARCHAR(36) NOT NULL,
   reviewer_id VARCHAR(36) NULL,
+  reviewed_by VARCHAR(36) NULL,
   status VARCHAR(50) DEFAULT 'pending',
   notes TEXT,
+  reviewed_at TIMESTAMP NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   INDEX idx_aw_status (status)
