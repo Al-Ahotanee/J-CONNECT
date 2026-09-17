@@ -355,7 +355,7 @@ async function getValidColumnsForTable(table) {
   }
   try {
     const cols = await query(`SHOW COLUMNS FROM \`${table}\``);
-    if (Array.isArray(cols) && cols.length > 0) {
+    if (Array.isArray(cols) && cols.length > 0 && cols[0] && typeof cols[0].Field === 'string') {
       const set = new Set(cols.map(c => c.Field));
       tableColumnCache.set(table, set);
       return set;

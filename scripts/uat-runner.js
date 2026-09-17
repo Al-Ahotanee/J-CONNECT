@@ -9,8 +9,10 @@ import app from '../server/index.js';
 import { initDatabase } from '../server/seed.js';
 import { saveSnapshot } from '../server/in-memory-db.js';
 
-const PORT = 5055;
-const BASE_URL = `http://127.0.0.1:${PORT}`;
+const TARGET_ARG = process.env.TARGET_URL || (process.argv[2] && process.argv[2].startsWith('http') ? process.argv[2] : null);
+const PORT = process.env.PORT || 5055;
+const BASE_URL = TARGET_ARG ? TARGET_ARG.replace(/\/+$/, '') : `http://127.0.0.1:${PORT}`;
+const isRemote = !!TARGET_ARG;
 
 let server;
 const results = {
@@ -77,11 +79,12 @@ async function runLiveUAT() {
   console.log(`  Host: ${BASE_URL} | All test data will be retained in DB`);
   console.log(`======================================================================\n`);
 
-  // Ensure DB initialized with schema and seed roles
-  await initDatabase();
-
-  server = app.listen(PORT);
-  await new Promise(resolve => setTimeout(resolve, 800));
+  // Ensure DB initialized with schema and seed roles (when local)
+  if (!isRemote) {
+    await initDatabase();
+    server = app.listen(PORT);
+    await new Promise(resolve => setTimeout(resolve, 800));
+  }
 
   try {
     // ------------------------------------------------------------------
@@ -1043,19 +1046,43 @@ async function runLiveUAT() {
     });
     assert('Mentor awards verified skill endorsement to candidate (skill_endorsements)', endorseRes.status === 201 && !!endorseRes.body?.id);
 
-    // 5. Community Posts, Comments & Reactions
+    // 5. Community Media Upload (Multipart Form Data)
+    let uploadedMediaUrl = '/uploads/community-media/launch-photo.png';
+    try {
+      const formData = new FormData();
+      const testBlob = new Blob(['J-CONNECT LIVE UAT TEST IMAGE CONTENT'], { type: 'image/png' });
+      formData.append('file', testBlob, 'jconnect-uat-community.png');
+
+      const uploadHeaders = {};
+      if (memberToken) uploadHeaders['Authorization'] = `Bearer ${memberToken}`;
+
+      const mediaUploadRes = await fetch(`${BASE_URL}/api/upload/community-media?path=uat-tests/launch.png`, {
+        method: 'POST',
+        headers: uploadHeaders,
+        body: formData,
+      });
+      const mediaUploadJson = await mediaUploadRes.json().catch(() => ({}));
+      assert('Community media upload endpoint accepts and stores photo/video file (multipart/form-data)', mediaUploadRes.status === 200 && (mediaUploadJson.success || !!mediaUploadJson.publicUrl));
+      if (mediaUploadJson.publicUrl) uploadedMediaUrl = mediaUploadJson.publicUrl;
+    } catch (upErr) {
+      assert('Community media upload endpoint accepts and stores photo/video file (multipart/form-data)', false, upErr.message);
+    }
+
+    // 6. Community Posts with Media & Visibility, Comments & Reactions
     const postRes = await request('/api/data/social_posts', {
       method: 'POST',
       token: memberToken,
       body: {
         user_id: memberUserId,
         group_id: groupId,
-        content: 'Celebrating the successful rollout of J-Connect across all 27 LGAs in Jigawa State!',
+        content: 'Celebrating the successful rollout of J-Connect across all 27 LGAs in Jigawa State! Photo attached.',
+        media_urls: [uploadedMediaUrl],
+        visibility: 'public',
         likes_count: 1,
         comments_count: 1,
       },
     });
-    assert('Community member creates statewide development post in social feed (social_posts)', postRes.status === 201 && !!postRes.body?.id);
+    assert('Community member creates statewide development post with photo media in social feed (social_posts)', postRes.status === 201 && !!postRes.body?.id);
     const postId = postRes.body?.id;
 
     const commentRes = await request('/api/data/social_comments', {
@@ -1296,13 +1323,15 @@ async function runLiveUAT() {
   } catch (err) {
     console.error('Fatal error during 360° Live UAT execution:', err);
   } finally {
-    // PRESERVE ALL DATA PERMANENTLY: Flush to disk
-    saveSnapshot();
-    console.log('\n[UAT DB Engine] Flushed and preserved all 360° UAT test data in persistent storage (server/db_data.json).');
-
-    if (server) {
-      server.close();
-      console.log('UAT live test server terminated cleanly.');
+    if (!isRemote) {
+      saveSnapshot();
+      console.log('\n[UAT DB Engine] Flushed and preserved all 360° UAT test data in persistent storage (server/db_data.json).');
+      if (server) {
+        server.close();
+        console.log('UAT live test server terminated cleanly.');
+      }
+    } else {
+      console.log('\n[UAT Live Service Engine] All tests executed live against remote production target: ' + BASE_URL);
     }
   }
 
