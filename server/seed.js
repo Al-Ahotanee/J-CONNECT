@@ -38,10 +38,13 @@ export async function initDatabase() {
   }
   console.log('[Seed] Schema created successfully.');
 
+  // Automatically sync all 49 tables and snapshot data from db_data.json if present
+  await syncSnapshotToDatabase();
+
   // Check if users already seeded
   const existingUsers = await query('SELECT COUNT(*) as cnt FROM users');
   if (existingUsers?.[0]?.cnt > 0) {
-    console.log(`[Seed] Database already contains ${existingUsers[0].cnt} users. Skipping user seeding.`);
+    console.log(`[Seed] Database already contains ${existingUsers[0].cnt} users. Skipping manual user seeding.`);
     return;
   }
 
@@ -278,6 +281,65 @@ export async function initDatabase() {
   }
 
   console.log('[Seed] Database initialization and seeding completed successfully!');
+}
+
+export async function syncSnapshotToDatabase() {
+  const snapshotPath = path.join(__dirname, 'db_data.json');
+  if (!fs.existsSync(snapshotPath)) return;
+
+  try {
+    const content = fs.readFileSync(snapshotPath, 'utf-8');
+    const snapshotData = JSON.parse(content);
+    const tableNames = Object.keys(snapshotData);
+
+    console.log(`[Auto-Sync] Checking and synchronizing ${tableNames.length} tables from db_data.json to MySQL/Aiven...`);
+    await query('SET FOREIGN_KEY_CHECKS = 0;');
+
+    let syncedCount = 0;
+    for (const tableName of tableNames) {
+      const rows = snapshotData[tableName];
+      if (!Array.isArray(rows) || rows.length === 0) continue;
+
+      // Check if table already has rows in MySQL
+      try {
+        const existing = await query(`SELECT COUNT(*) as cnt FROM \`${tableName}\``);
+        if (existing?.[0]?.cnt > 0) continue; // Preserve existing data
+      } catch (err) {
+        // Table might not exist or error, continue
+      }
+
+      const sampleRow = rows[0];
+      const columns = Object.keys(sampleRow);
+      const escapedCols = columns.map(c => `\`${c}\``).join(', ');
+      const placeholders = columns.map(() => '?').join(', ');
+
+      for (const row of rows) {
+        const values = columns.map(col => {
+          let val = row[col];
+          if (val === undefined) return null;
+          if (typeof val === 'object' && val !== null) return JSON.stringify(val);
+          if (typeof val === 'boolean') return val ? 1 : 0;
+          return val;
+        });
+
+        try {
+          await query(`INSERT IGNORE INTO \`${tableName}\` (${escapedCols}) VALUES (${placeholders})`, values);
+        } catch (e) {
+          // ignore row constraint warning
+        }
+      }
+      syncedCount++;
+    }
+
+    await query('SET FOREIGN_KEY_CHECKS = 1;');
+    if (syncedCount > 0) {
+      console.log(`[Auto-Sync] Successfully synchronized ${syncedCount} tables into MySQL/Aiven.`);
+    } else {
+      console.log('[Auto-Sync] Database already contains populated tables. Skipping auto-sync.');
+    }
+  } catch (err) {
+    console.warn('[Auto-Sync] Warning during auto-sync:', err.message);
+  }
 }
 
 // Allow direct execution: node server/seed.js
