@@ -272,12 +272,13 @@ async function runLiveUAT() {
     const recruiterUserId = sessionUsers['recruiter@jconnect.gov.ng']?.id || 'recruiter-id';
 
     // 1. Recruiter creates Company Profile
-    const companyRes = await request('/api/data/company_profiles', {
+    const companyRes = await request('/api/data/company_profiles?upsert=true', {
       method: 'POST',
       token: recruiterToken,
       body: {
         user_id: recruiterUserId,
         name: 'Jigawa Digital Infrastructure Agency (JDIA)',
+        company_name: 'Jigawa Digital Infrastructure Agency (JDIA)',
         logo_url: 'https://cdn.jconnect.gov.ng/logos/jdia.png',
         description: 'Lead government agency driving state digital transformation, telecommunications, and public cloud systems.',
         industry: 'Information Technology',

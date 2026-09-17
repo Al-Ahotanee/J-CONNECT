@@ -378,6 +378,13 @@ function normalizeDocValues(table, doc, reqUser) {
     if (!doc.category) {
       doc.category = doc.specialization || 'General Mentorship';
     }
+  } else if (table === 'company_profiles') {
+    if (!doc.name && doc.company_name) {
+      doc.name = doc.company_name;
+    }
+    if (!doc.company_name && doc.name) {
+      doc.company_name = doc.name;
+    }
   }
 
   for (const [k, v] of Object.entries(doc)) {
