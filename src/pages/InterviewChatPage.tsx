@@ -155,7 +155,7 @@ const InterviewChatPage = () => {
 
       const { data: inserted } = await supabase.from("messages").insert({
         sender_id: user.id, receiver_id: otherId,
-        content: `📎 ${file.name}`,
+        content: file.name,
         file_url: urlData.publicUrl,
         file_name: file.name,
       });
@@ -163,7 +163,7 @@ const InterviewChatPage = () => {
         id: (inserted as any)?.[0]?.id || `tmp-${Date.now()}`,
         sender_id: user.id,
         receiver_id: otherId,
-        content: `📎 ${file.name}`,
+        content: file.name,
         file_url: urlData.publicUrl,
         file_name: file.name,
         created_at: new Date().toISOString(),
@@ -235,7 +235,10 @@ const InterviewChatPage = () => {
                 <div className={`max-w-[70%] rounded-2xl px-4 py-2.5 ${
                   isMe ? "bg-primary text-primary-foreground rounded-br-md" : "bg-card border border-border text-foreground rounded-bl-md"
                 }`}>
-                  <p className="text-sm whitespace-pre-wrap">{msg.content}</p>
+                  <p className="text-sm whitespace-pre-wrap">
+                    {msg.file_url && <Paperclip className="h-3.5 w-3.5 inline mr-1" />}
+                    {msg.content?.replace(/^\u{1F4CE}\s*/u, "")}
+                  </p>
                   {renderFilePreview(msg)}
                   <p className={`text-[9px] mt-1 ${isMe ? "text-primary-foreground/60" : "text-muted-foreground"}`}>
                     {new Date(msg.created_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}

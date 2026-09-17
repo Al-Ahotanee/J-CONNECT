@@ -17,7 +17,7 @@ import {
   Briefcase, Star, ClipboardList, Calendar, Award, MessageCircle,
   CheckCircle, XCircle, Clock, FileText, ExternalLink, ChevronRight,
   Sparkles, Building, MapPin, ThumbsUp, ThumbsDown, Target, Upload,
-  User, GraduationCap, Phone, Mail, ChevronDown,
+  User, GraduationCap, Phone, Mail, ChevronDown, Video,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -338,8 +338,18 @@ const JobSeekerDashboardPage = () => {
                 <div key={inv.id} className="bg-card rounded-lg p-4 border border-border">
                   <div className="flex items-start justify-between gap-4">
                     <div>
-                      <Badge variant={inv.type === "exam" ? "secondary" : "default"} className="text-[10px] h-5 mb-2">
-                        {inv.type === "exam" ? "📝 CBT Exam" : "💬 Interview"}
+                      <Badge variant={inv.type === "exam" ? "secondary" : "default"} className="text-[10px] h-5 mb-2 gap-1 inline-flex items-center">
+                        {inv.type === "exam" ? (
+                          <>
+                            <FileText className="h-2.5 w-2.5" />
+                            <span>CBT Exam</span>
+                          </>
+                        ) : (
+                          <>
+                            <Video className="h-2.5 w-2.5" />
+                            <span>Interview</span>
+                          </>
+                        )}
                       </Badge>
                       <Badge variant="outline" className="text-[10px] h-5 ml-1">{inv.status}</Badge>
                       {inv.scheduled_at && (

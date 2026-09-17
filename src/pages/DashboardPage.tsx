@@ -13,7 +13,7 @@ import {
   FileText, Bell, ChevronRight, Shield, Users, TrendingUp,
   Clock, CheckCircle, ArrowUpRight, Activity, Database,
   Monitor, UserCheck, Building2, Crown, Network, UserPlus,
-  MessageCircle, BarChart3, MapPin, Star,
+  MessageCircle, BarChart3, MapPin, Star, Sparkles,
 } from "lucide-react";
 
 // ══════════════════════════════════════════════
@@ -325,7 +325,10 @@ const CitizenDashboard = ({ user }: { user: any }) => {
   return (
     <div className="p-6 space-y-6">
       <div className="bg-hero-gradient rounded-2xl p-6 md:p-8">
-        <h1 className="font-display text-2xl md:text-3xl font-bold text-primary-foreground">Welcome back, {profile?.full_name?.split(" ")[0] || "User"} 👋</h1>
+        <h1 className="font-display text-2xl md:text-3xl font-bold text-primary-foreground inline-flex items-center gap-2">
+          <span>Welcome back, {profile?.full_name?.split(" ")[0] || "User"}</span>
+          <Sparkles className="h-6 w-6 text-secondary" />
+        </h1>
         <p className="text-primary-foreground/70 mt-1 text-sm">Here's what's happening with your profile today.</p>
       </div>
 

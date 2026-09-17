@@ -12,7 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { JIGAWA_LGAS, SECTORS, EMPLOYMENT_STATUSES, QUALIFICATION_TYPES, USER_TYPES } from "@/lib/constants";
 import { toast } from "sonner";
-import { Save, Upload, Camera, Plus, Trash2, User } from "lucide-react";
+import { Save, Upload, Camera, Plus, Trash2, User, CheckCircle2 } from "lucide-react";
 import { ChangePasswordModal } from "@/components/profile/ChangePasswordModal";
 
 const ProfilePage = () => {
@@ -247,7 +247,11 @@ const ProfilePage = () => {
               <span className="text-xs font-medium text-foreground">Choose File</span>
             </div>
           </label>
-          {profile?.cv_file_url && <span className="text-xs text-primary font-medium">CV uploaded ✓</span>}
+          {profile?.cv_file_url && (
+            <span className="inline-flex items-center gap-1 text-xs text-primary font-medium">
+              <CheckCircle2 className="h-3.5 w-3.5" /> CV uploaded
+            </span>
+          )}
         </div>
       </div>
     </div>

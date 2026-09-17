@@ -424,8 +424,8 @@ const AuditLogsPage = () => {
                                 {entityCfg.label}
                               </Badge>
                               {isCritical && (
-                                <Badge variant="outline" className="text-[9px] h-4 px-1.5 bg-destructive/10 text-destructive border-destructive/30">
-                                  ⚠ Critical
+                                <Badge variant="outline" className="text-[9px] h-4 px-1.5 bg-destructive/10 text-destructive border-destructive/30 inline-flex items-center gap-1">
+                                  <AlertTriangle className="h-2.5 w-2.5" /> Critical
                                 </Badge>
                               )}
                             </div>

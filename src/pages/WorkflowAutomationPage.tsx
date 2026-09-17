@@ -15,7 +15,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Label } from "@/components/ui/label";
 import {
-  GitPullRequest, CheckCircle, XCircle, Clock, AlertTriangle,
+  GitPullRequest, CheckCircle, XCircle, Clock, AlertTriangle, AlertCircle,
   ArrowUpCircle, Filter, Search, Eye, RotateCcw, Timer,
   TrendingUp, BarChart3, Shield, FileText,
 } from "lucide-react";
@@ -212,10 +212,26 @@ const WorkflowAutomationPage = () => {
 
   const getSLABadge = (slaStatus: string | null) => {
     switch (slaStatus) {
-      case "overdue": return <Badge className="bg-destructive/10 text-destructive border-destructive/30 text-[9px]">⏰ SLA Overdue</Badge>;
-      case "critical": return <Badge className="bg-destructive/10 text-destructive border-destructive/30 text-[9px]">🔴 Critical</Badge>;
-      case "warning": return <Badge className="bg-secondary/10 text-secondary-foreground border-secondary/30 text-[9px]">🟡 Due Soon</Badge>;
-      default: return null;
+      case "overdue":
+        return (
+          <Badge className="bg-destructive/10 text-destructive border-destructive/30 text-[9px] gap-1 inline-flex items-center">
+            <Clock className="h-2.5 w-2.5" /> SLA Overdue
+          </Badge>
+        );
+      case "critical":
+        return (
+          <Badge className="bg-destructive/10 text-destructive border-destructive/30 text-[9px] gap-1 inline-flex items-center">
+            <AlertCircle className="h-2.5 w-2.5" /> Critical
+          </Badge>
+        );
+      case "warning":
+        return (
+          <Badge className="bg-secondary/10 text-secondary-foreground border-secondary/30 text-[9px] gap-1 inline-flex items-center">
+            <AlertTriangle className="h-2.5 w-2.5" /> Due Soon
+          </Badge>
+        );
+      default:
+        return null;
     }
   };
 

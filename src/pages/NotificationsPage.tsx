@@ -6,7 +6,7 @@ import { Navigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
-import { Bell, Check, CheckCheck, ExternalLink } from "lucide-react";
+import { Bell, Check, CheckCheck, ExternalLink, CheckCircle2, AlertTriangle, AlertCircle, Megaphone, Info } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useEffect } from "react";
 
@@ -50,11 +50,11 @@ const NotificationsPage = () => {
 
   const getTypeIcon = (type: string | null) => {
     switch (type) {
-      case "success": return "🎉";
-      case "warning": return "⚠️";
-      case "error": return "🚨";
-      case "announcement": return "📢";
-      default: return "ℹ️";
+      case "success": return <CheckCircle2 className="h-5 w-5 text-emerald-500" />;
+      case "warning": return <AlertTriangle className="h-5 w-5 text-amber-500" />;
+      case "error": return <AlertCircle className="h-5 w-5 text-destructive" />;
+      case "announcement": return <Megaphone className="h-5 w-5 text-blue-500" />;
+      default: return <Info className="h-5 w-5 text-primary" />;
     }
   };
 
@@ -93,7 +93,7 @@ const NotificationsPage = () => {
                 className={`px-5 py-4 hover:bg-muted/30 transition-colors ${!n.is_read ? "bg-accent/20 border-l-2 border-l-primary" : ""}`}
               >
                 <div className="flex items-start gap-3">
-                  <span className="text-lg mt-0.5">{getTypeIcon(n.type)}</span>
+                  <div className="mt-0.5 shrink-0">{getTypeIcon(n.type)}</div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
                       <p className="text-sm font-semibold text-foreground">{n.title}</p>

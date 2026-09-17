@@ -21,7 +21,7 @@ import {
   BookmarkCheck, Share2, Check, Copy, ArrowUpRight,
   ShieldCheck, Printer, DollarSign, Award, Users,
   CheckCircle2, AlertCircle, Eye, Sparkles, Filter,
-  Layers, ArrowRight
+  Layers, ArrowRight, Landmark, Laptop, Sprout, HeartPulse
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
@@ -30,13 +30,13 @@ import Footer from "@/components/Footer";
 
 // Preset Quick Filter Pills for Hero Section
 const QUICK_PILLS = [
-  { label: "All Roles", value: "all" },
-  { label: "🏛️ Civil Service & MDAs", value: "Civil Service" },
-  { label: "📚 SUBEB & Education", value: "Education" },
-  { label: "💻 ICT & Innovation", value: "ICT" },
-  { label: "🌾 Agriculture & Food", value: "Agriculture" },
-  { label: "🏥 Healthcare", value: "Health" },
-  { label: "🏢 Private & Enterprise", value: "Private" },
+  { label: "All Roles", value: "all", icon: Briefcase },
+  { label: "Civil Service & MDAs", value: "Civil Service", icon: Landmark },
+  { label: "SUBEB & Education", value: "Education", icon: GraduationCap },
+  { label: "ICT & Innovation", value: "ICT", icon: Laptop },
+  { label: "Agriculture & Food", value: "Agriculture", icon: Sprout },
+  { label: "Healthcare", value: "Health", icon: HeartPulse },
+  { label: "Private & Enterprise", value: "Private", icon: Building2 },
 ];
 
 const PublicJobsPage = () => {
@@ -458,17 +458,19 @@ const PublicJobsPage = () => {
                 </span>
                 {QUICK_PILLS.map(pill => {
                   const isSelected = pill.value === "all" ? (!sector || sector === "all") : sector.toLowerCase().includes(pill.value.toLowerCase());
+                  const Icon = pill.icon;
                   return (
                     <button
                       key={pill.value}
                       onClick={() => setSector(pill.value === "all" ? "" : pill.value)}
-                      className={`whitespace-nowrap px-3 py-1.5 rounded-lg font-medium transition-all text-xs shrink-0 ${
+                      className={`inline-flex items-center gap-1.5 whitespace-nowrap px-3 py-1.5 rounded-lg font-medium transition-all text-xs shrink-0 ${
                         isSelected
                           ? "bg-emerald-600 text-white font-semibold shadow-sm"
                           : "bg-muted/60 text-muted-foreground hover:bg-muted hover:text-foreground"
                       }`}
                     >
-                      {pill.label}
+                      {Icon && <Icon className="h-3.5 w-3.5 shrink-0" />}
+                      <span>{pill.label}</span>
                     </button>
                   );
                 })}

@@ -10,7 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import {
   BookOpen, Play, CheckCircle, Clock, ArrowLeft, ArrowRight,
-  Award, Timer, AlertCircle, FileText, Download,
+  Award, Timer, AlertCircle, FileText, Download, CheckCircle2, XCircle,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -287,8 +287,17 @@ const CoursePage = () => {
                   <Award size={14} className="mr-1" /> Take Exam
                 </Button>
                 {bestAttempt && (
-                  <p className="text-xs text-muted-foreground mt-2 text-center">
-                    Best score: {bestAttempt.score}% {bestAttempt.passed ? "✓ Passed" : "✗ Failed"}
+                  <p className="text-xs text-muted-foreground mt-2 text-center inline-flex items-center justify-center gap-1 w-full">
+                    <span>Best score: {bestAttempt.score}%</span>
+                    {bestAttempt.passed ? (
+                      <span className="inline-flex items-center gap-0.5 text-emerald-600 font-medium ml-1">
+                        <CheckCircle2 size={12} /> Passed
+                      </span>
+                    ) : (
+                      <span className="inline-flex items-center gap-0.5 text-destructive font-medium ml-1">
+                        <XCircle size={12} /> Failed
+                      </span>
+                    )}
                   </p>
                 )}
               </div>

@@ -242,7 +242,7 @@ const AdvancedReporting = () => {
       @media print{body{padding:10px}.header h1{font-size:16px}table{font-size:9px}}
     </style></head><body>
     <div class="header">
-      <h1>🇳🇬 J-Connect — Human Capital Report</h1>
+      <h1>J-Connect — Human Capital Report</h1>
       <div class="sub">Jigawa State Human Capital Development Portal</div>
     </div>
     <div class="meta">
