@@ -3,7 +3,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import bcrypt from 'bcryptjs';
 import { v4 as uuidv4 } from 'uuid';
-import { pool, query, checkConnection } from './db.js';
+import { pool, query, checkConnection, isUsingInMemory } from './db.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -284,6 +284,11 @@ export async function initDatabase() {
 }
 
 export async function syncSnapshotToDatabase() {
+  if (isUsingInMemory()) {
+    console.log('[Auto-Sync] Remote MySQL is not connected. Local in-memory data is active.');
+    return;
+  }
+
   const snapshotPath = path.join(__dirname, 'db_data.json');
   if (!fs.existsSync(snapshotPath)) return;
 
@@ -292,7 +297,7 @@ export async function syncSnapshotToDatabase() {
     const snapshotData = JSON.parse(content);
     const tableNames = Object.keys(snapshotData);
 
-    console.log(`[Auto-Sync] Checking and synchronizing ${tableNames.length} tables from db_data.json to MySQL/Aiven...`);
+    console.log(`[Auto-Sync] Connecting to Aiven/MySQL to synchronize ${tableNames.length} tables from db_data.json...`);
     await query('SET FOREIGN_KEY_CHECKS = 0;');
 
     let syncedCount = 0;

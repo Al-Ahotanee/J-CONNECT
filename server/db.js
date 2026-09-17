@@ -9,36 +9,75 @@ const __dirname = path.dirname(__filename);
 
 dotenv.config();
 
-function buildConnectionConfig() {
-  const connectionUrl = process.env.MYSQL_URL || process.env.DATABASE_URL;
-
-  let config = {};
-
-  if (connectionUrl) {
-    try {
-      const parsed = new URL(connectionUrl);
-      config = {
-        host: parsed.hostname,
-        port: parsed.port ? parseInt(parsed.port, 10) : 3306,
-        user: decodeURIComponent(parsed.username),
-        password: decodeURIComponent(parsed.password),
-        database: parsed.pathname ? parsed.pathname.replace(/^\//, '') : 'defaultdb',
+function parseMysqlUrl(urlStr) {
+  if (!urlStr || typeof urlStr !== 'string') return null;
+  const clean = urlStr.trim().replace(/^['"]|['"]$/g, '');
+  
+  try {
+    const parsed = new URL(clean);
+    return {
+      host: parsed.hostname,
+      port: parsed.port ? parseInt(parsed.port, 10) : 3306,
+      user: decodeURIComponent(parsed.username || 'avnadmin'),
+      password: decodeURIComponent(parsed.password || ''),
+      database: parsed.pathname ? parsed.pathname.replace(/^\//, '').split('?')[0] : 'defaultdb',
+    };
+  } catch (e) {
+    // Regex fallback for passwords containing unencoded special characters
+    const match = clean.match(/^mysql(?:2)?:\/\/([^:]+):(.+)@([^:/]+)(?::(\d+))?\/(.+)$/);
+    if (match) {
+      const [, user, password, host, port, dbAndQuery] = match;
+      const database = (dbAndQuery || 'defaultdb').split('?')[0];
+      return {
+        host,
+        port: port ? parseInt(port, 10) : 3306,
+        user: decodeURIComponent(user),
+        password: decodeURIComponent(password),
+        database,
       };
-    } catch (e) {
-      console.warn('[DB] Failed to parse connection URL, falling back to env vars:', e.message);
     }
+    console.warn('[DB] Failed to parse connection URL:', e.message);
+    return null;
   }
+}
 
-  config.host = config.host || process.env.MYSQL_HOST || process.env.DB_HOST || 'localhost';
-  config.port = config.port || (process.env.MYSQL_PORT ? parseInt(process.env.MYSQL_PORT, 10) : (process.env.DB_PORT ? parseInt(process.env.DB_PORT, 10) : 3306));
-  config.user = config.user || process.env.MYSQL_USER || process.env.DB_USER || 'root';
-  config.password = config.password !== undefined ? config.password : (process.env.MYSQL_PASSWORD || process.env.DB_PASSWORD || '');
-  config.database = config.database || process.env.MYSQL_DATABASE || process.env.DB_NAME || 'defaultdb';
+function buildConnectionConfig() {
+  const rawUrl = process.env.MYSQL_URL || 
+                 process.env.DATABASE_URL || 
+                 process.env.AIVEN_URL || 
+                 process.env.AIVEN_MYSQL_URL ||
+                 process.env.MYSQL_URI ||
+                 process.env.MYSQL_CONNECTION_STRING;
 
+  const parsedConfig = parseMysqlUrl(rawUrl) || {};
+
+  const host = parsedConfig.host || process.env.MYSQL_HOST || process.env.DB_HOST || 'localhost';
+  const port = parsedConfig.port || (process.env.MYSQL_PORT ? parseInt(process.env.MYSQL_PORT, 10) : (process.env.DB_PORT ? parseInt(process.env.DB_PORT, 10) : 3306));
+  const user = parsedConfig.user || process.env.MYSQL_USER || process.env.DB_USER || 'root';
+  const password = parsedConfig.password !== undefined ? parsedConfig.password : (process.env.MYSQL_PASSWORD || process.env.DB_PASSWORD || '');
+  const database = parsedConfig.database || process.env.MYSQL_DATABASE || process.env.DB_NAME || 'defaultdb';
+
+  const isRemote = host !== 'localhost' && host !== '127.0.0.1';
+  const isAiven = host.includes('aivencloud.com');
   const useSsl = process.env.MYSQL_SSL === 'true' || 
                  process.env.DB_SSL === 'true' || 
-                 (connectionUrl && connectionUrl.includes('ssl-mode')) ||
-                 config.host.includes('aivencloud.com');
+                 (rawUrl && rawUrl.includes('ssl')) ||
+                 isAiven ||
+                 isRemote;
+
+  const config = {
+    host,
+    port,
+    user,
+    password,
+    database,
+    waitForConnections: true,
+    connectionLimit: parseInt(process.env.DB_POOL_LIMIT || '10', 10),
+    queueLimit: 0,
+    enableKeepAlive: true,
+    keepAliveInitialDelay: 10000,
+    connectTimeout: 20000,
+  };
 
   if (useSsl) {
     config.ssl = {
@@ -51,12 +90,6 @@ function buildConnectionConfig() {
     }
   }
 
-  config.waitForConnections = true;
-  config.connectionLimit = parseInt(process.env.DB_POOL_LIMIT || '10', 10);
-  config.queueLimit = 0;
-  config.enableKeepAlive = true;
-  config.keepAliveInitialDelay = 10000;
-
   return config;
 }
 
@@ -68,15 +101,39 @@ let checkedAvailability = false;
 const poolConfig = buildConnectionConfig();
 export const pool = mysql.createPool(poolConfig);
 
+export function isUsingInMemory() {
+  return useInMemory;
+}
+
 async function ensureConnection() {
   if (checkedAvailability) return !useInMemory;
   checkedAvailability = true;
+
+  const config = poolConfig;
+  const isLocalDefault = (config.host === 'localhost' || config.host === '127.0.0.1') && 
+                         !process.env.MYSQL_URL && !process.env.DATABASE_URL && !process.env.MYSQL_HOST;
+
+  if (isLocalDefault) {
+    useInMemory = true;
+    console.log('[DB] No remote database configured. Resilient in-memory database active.');
+    return false;
+  }
+
+  console.log(`[DB Connecting] Connecting to MySQL at ${config.user}@${config.host}:${config.port}/${config.database} (SSL: ${!!config.ssl})...`);
+
   try {
     const [rows] = await pool.query('SELECT 1 AS connected');
     useInMemory = !(rows && rows[0]?.connected === 1);
+    if (!useInMemory) {
+      console.log(`✅ [DB Connected] Successfully connected to remote MySQL at ${config.host}:${config.port}/${config.database}`);
+    } else {
+      console.warn('[DB Warning] Unexpected query response from remote MySQL. Falling back to in-memory.');
+    }
   } catch (err) {
     useInMemory = true;
-    console.log('[DB] Note: Remote/Local MySQL not detected. Resilient in-memory database active.');
+    console.error(`❌ [DB Connection Failed] Target: ${config.host}:${config.port} | User: ${config.user} | Error: ${err.message}`);
+    if (err.code) console.error(`   Error Code: ${err.code}`);
+    console.log('[DB Fallback] Resilient in-memory database active with local snapshot data.');
   }
   return !useInMemory;
 }
