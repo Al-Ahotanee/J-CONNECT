@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
-import { Navigate } from "react-router-dom";
+import { Navigate, Link } from "react-router-dom";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { fetchProfile, updateProfile, fetchEducation, addEducation, deleteEducation } from "@/lib/api";
+import { fetchUserCertificates } from "@/lib/learning-api";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,7 +13,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { JIGAWA_LGAS, SECTORS, EMPLOYMENT_STATUSES, QUALIFICATION_TYPES, USER_TYPES } from "@/lib/constants";
 import { toast } from "sonner";
-import { Save, Upload, Camera, Plus, Trash2, User, CheckCircle2 } from "lucide-react";
+import { Save, Upload, Camera, Plus, Trash2, User, CheckCircle2, Award, ExternalLink } from "lucide-react";
 import { ChangePasswordModal } from "@/components/profile/ChangePasswordModal";
 
 const ProfilePage = () => {
@@ -25,6 +26,7 @@ const ProfilePage = () => {
 
   const { data: profile } = useQuery({ queryKey: ["profile", user?.id], queryFn: () => fetchProfile(user!.id), enabled: !!user });
   const { data: education } = useQuery({ queryKey: ["education", user?.id], queryFn: () => fetchEducation(user!.id), enabled: !!user });
+  const { data: certificates } = useQuery({ queryKey: ["myCertificates", user?.id], queryFn: () => fetchUserCertificates(user!.id), enabled: !!user });
 
   const [form, setForm] = useState<Record<string, any>>({});
 
@@ -253,6 +255,45 @@ const ProfilePage = () => {
             </span>
           )}
         </div>
+      </div>
+
+      {/* Verified Certifications & Badges */}
+      <div className="bg-card rounded-xl p-5 shadow-soft border border-border">
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-2">
+            <Award className="h-4 w-4 text-secondary" />
+            <h2 className="font-display text-sm font-semibold text-foreground">Verified Certifications & Accreditations</h2>
+          </div>
+          <Badge variant="outline" className="text-xs">{certificates?.length || 0} Earned</Badge>
+        </div>
+
+        {certificates && certificates.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            {certificates.map((cert: any) => (
+              <div key={cert.id} className="p-4 bg-muted/40 rounded-xl border border-border flex items-center justify-between gap-3">
+                <div className="flex items-center gap-3 min-w-0">
+                  <div className="w-10 h-10 rounded-lg bg-secondary/10 flex items-center justify-center shrink-0">
+                    <Award className="h-5 w-5 text-secondary" />
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-xs font-semibold text-foreground truncate">{cert.courses?.title || "J-Connect Certificate"}</p>
+                    <p className="text-[10px] text-muted-foreground font-mono">#{cert.certificate_number}</p>
+                    <p className="text-[10px] text-muted-foreground">Issued: {new Date(cert.issued_at).toLocaleDateString()}</p>
+                  </div>
+                </div>
+                <Button size="sm" variant="outline" className="h-7 text-xs shrink-0" asChild>
+                  <Link to={`/verify-certificate/${cert.certificate_number}`}>
+                    <ExternalLink className="h-3 w-3 mr-1" /> View
+                  </Link>
+                </Button>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-6 text-xs text-muted-foreground">
+            No course certificates earned yet. Complete courses on the <Link to="/learning" className="text-primary underline">E-Learning Hub</Link> to earn verified credentials!
+          </div>
+        )}
       </div>
     </div>
   );

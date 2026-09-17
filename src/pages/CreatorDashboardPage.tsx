@@ -39,7 +39,18 @@ const CreatorDashboardPage = () => {
   const [uploading, setUploading] = useState(false);
 
   // Form states
-  const [courseForm, setCourseForm] = useState({ title: "", description: "", category: "", level: "Beginner", duration: "", is_free: true, price: 0 });
+  const [courseForm, setCourseForm] = useState({ 
+    title: "", 
+    description: "", 
+    category: "", 
+    level: "Beginner", 
+    duration: "", 
+    is_free: true, 
+    price: 0,
+    bank_name: "",
+    account_number: "",
+    account_name: ""
+  });
   const [lessonForm, setLessonForm] = useState({ title: "", content: "", video_url: "", duration: "" });
   const [quizForm, setQuizForm] = useState({ title: "", description: "", pass_score: 50, time_limit_minutes: 30 });
   const [questionForm, setQuestionForm] = useState({ question: "", options: ["", "", "", ""], correct_answer: 0 });
@@ -94,7 +105,7 @@ const CreatorDashboardPage = () => {
     try {
       await createCourse({ ...courseForm, instructor_id: user.id });
       toast.success("Course created!");
-      setCourseForm({ title: "", description: "", category: "", level: "Beginner", duration: "", is_free: true, price: 0 });
+      setCourseForm({ title: "", description: "", category: "", level: "Beginner", duration: "", is_free: true, price: 0, bank_name: "", account_number: "", account_name: "" });
       setShowCreateCourse(false);
       queryClient.invalidateQueries({ queryKey: ["instructorCourses"] });
     } catch (err: any) { toast.error(err.message); }
@@ -250,6 +261,16 @@ const CreatorDashboardPage = () => {
                     <Input type="number" placeholder="Price (₦)" className="w-32" value={courseForm.price} onChange={e => setCourseForm(p => ({ ...p, price: Number(e.target.value) }))} />
                   )}
                 </div>
+                {!courseForm.is_free && (
+                  <div className="space-y-2 p-3 bg-muted/50 rounded-lg border border-border">
+                    <p className="text-xs font-semibold text-foreground">Payout Bank Details</p>
+                    <Input placeholder="Bank Name (e.g. Zenith Bank, Access Bank)" value={courseForm.bank_name} onChange={e => setCourseForm(p => ({ ...p, bank_name: e.target.value }))} />
+                    <div className="grid grid-cols-2 gap-2">
+                      <Input placeholder="Account Number" maxLength={10} value={courseForm.account_number} onChange={e => setCourseForm(p => ({ ...p, account_number: e.target.value }))} />
+                      <Input placeholder="Account Name" value={courseForm.account_name} onChange={e => setCourseForm(p => ({ ...p, account_name: e.target.value }))} />
+                    </div>
+                  </div>
+                )}
                 <Button className="w-full bg-primary text-primary-foreground" onClick={handleCreateCourse} disabled={!courseForm.title}>
                   <Save className="h-4 w-4 mr-1" /> Create Course
                 </Button>

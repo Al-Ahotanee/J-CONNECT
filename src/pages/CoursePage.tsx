@@ -3,14 +3,16 @@ import { useAuth } from "@/hooks/useAuth";
 import { Navigate, useParams, Link } from "react-router-dom";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { fetchLessons, fetchQuiz, submitQuizAttempt, fetchQuizAttempts, updateEnrollment } from "@/lib/api";
-import { markLessonComplete, fetchLessonCompletions, fetchCourseMaterials } from "@/lib/learning-api";
+import { markLessonComplete, fetchLessonCompletions, fetchCourseMaterials, fetchAllDiscussions, createDiscussionPost, fetchUserCertificates } from "@/lib/learning-api";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
+import { Textarea } from "@/components/ui/textarea";
 import {
   BookOpen, Play, CheckCircle, Clock, ArrowLeft, ArrowRight,
   Award, Timer, AlertCircle, FileText, Download, CheckCircle2, XCircle,
+  MessageSquare, Send, CornerDownRight,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -98,6 +100,26 @@ const CoursePage = () => {
     enabled: !!quizData?.id && !!user,
   });
 
+  // User certificates
+  const { data: userCerts } = useQuery({
+    queryKey: ["myCertificates", user?.id],
+    queryFn: () => fetchUserCertificates(user!.id),
+    enabled: !!user,
+  });
+  const earnedCert = userCerts?.find((c: any) => c.course_id === courseId);
+
+  // Discussions
+  const { data: allDiscussions } = useQuery({
+    queryKey: ["courseDiscussions", courseId],
+    queryFn: () => fetchAllDiscussions(courseId!),
+    enabled: !!courseId && !!user,
+  });
+
+  const [newQuestion, setNewQuestion] = useState("");
+  const [replyingTo, setReplyingTo] = useState<string | null>(null);
+  const [replyContent, setReplyContent] = useState("");
+  const [postingDiscussion, setPostingDiscussion] = useState(false);
+
   // Timer
   useEffect(() => {
     if (!quizStarted || timeLeft === null || timeLeft <= 0 || quizSubmitted) return;
@@ -117,6 +139,44 @@ const CoursePage = () => {
   if (!user) return <Navigate to="/login" />;
 
   const currentLesson = lessons?.[selectedLessonIdx];
+
+  const handlePostQuestion = async () => {
+    if (!newQuestion.trim() || !courseId || !user) return;
+    setPostingDiscussion(true);
+    try {
+      await createDiscussionPost({
+        course_id: courseId,
+        user_id: user.id,
+        content: newQuestion.trim(),
+        lesson_id: currentLesson?.id,
+      });
+      setNewQuestion("");
+      toast.success("Question posted to course forum!");
+      queryClient.invalidateQueries({ queryKey: ["courseDiscussions", courseId] });
+    } catch (err: any) {
+      toast.error(err.message || "Failed to post question");
+    } finally {
+      setPostingDiscussion(false);
+    }
+  };
+
+  const handlePostReply = async (parentId: string) => {
+    if (!replyContent.trim() || !courseId || !user) return;
+    try {
+      await createDiscussionPost({
+        course_id: courseId,
+        user_id: user.id,
+        content: replyContent.trim(),
+        parent_id: parentId,
+      });
+      setReplyContent("");
+      setReplyingTo(null);
+      toast.success("Reply posted!");
+      queryClient.invalidateQueries({ queryKey: ["courseDiscussions", courseId] });
+    } catch (err: any) {
+      toast.error(err.message || "Failed to post reply");
+    }
+  };
 
   const handleMarkComplete = async (lessonId: string) => {
     if (!courseId) return;
@@ -215,6 +275,27 @@ const CoursePage = () => {
           <div className="mt-4 flex items-center gap-4">
             <Progress value={overallProgress} className="flex-1 max-w-md h-2" />
             <span className="text-sm font-semibold text-primary-foreground">{overallProgress}% complete</span>
+          </div>
+        </div>
+      )}
+
+      {earnedCert && (
+        <div className="bg-emerald-500/10 border border-emerald-500/30 rounded-2xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-600">
+              <Award className="h-6 w-6" />
+            </div>
+            <div>
+              <p className="font-semibold text-foreground text-sm">Official Certificate Earned!</p>
+              <p className="text-xs text-muted-foreground font-mono">Serial: {earnedCert.certificate_number}</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            <Button size="sm" className="bg-emerald-600 hover:bg-emerald-700 text-white text-xs" asChild>
+              <Link to={`/verify-certificate/${earnedCert.certificate_number}`}>
+                <CheckCircle2 className="h-3.5 w-3.5 mr-1" /> View & Verify Certificate
+              </Link>
+            </Button>
           </div>
         </div>
       )}
@@ -376,6 +457,127 @@ const CoursePage = () => {
                 <p className="text-muted-foreground">Select a lesson to start learning.</p>
               </div>
             )}
+
+            {/* Course Discussion Forum */}
+            <div className="mt-6 bg-card rounded-xl shadow-soft border border-border p-6">
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-2">
+                  <MessageSquare className="h-5 w-5 text-primary" />
+                  <h3 className="font-display text-base font-semibold text-foreground">Course Discussions & Q&A</h3>
+                </div>
+                <Badge variant="outline" className="text-xs">
+                  {allDiscussions?.length || 0} posts
+                </Badge>
+              </div>
+
+              {/* Ask Question Form */}
+              <div className="space-y-3 mb-6 bg-muted/40 p-4 rounded-xl border border-border/50">
+                <Textarea
+                  placeholder={`Have a question about ${currentLesson?.title || "this course"}? Ask here...`}
+                  value={newQuestion}
+                  onChange={(e) => setNewQuestion(e.target.value)}
+                  rows={3}
+                  className="bg-background text-sm"
+                />
+                <div className="flex justify-end">
+                  <Button
+                    size="sm"
+                    className="bg-primary text-primary-foreground text-xs"
+                    onClick={handlePostQuestion}
+                    disabled={postingDiscussion || !newQuestion.trim()}
+                  >
+                    <Send className="h-3.5 w-3.5 mr-1" />
+                    {postingDiscussion ? "Posting..." : "Post Question"}
+                  </Button>
+                </div>
+              </div>
+
+              {/* Discussion List */}
+              {allDiscussions && allDiscussions.length > 0 ? (
+                <div className="space-y-4">
+                  {allDiscussions
+                    .filter((p: any) => !p.parent_id)
+                    .map((post: any) => {
+                      const replies = allDiscussions.filter((r: any) => r.parent_id === post.id);
+                      return (
+                        <div key={post.id} className="p-4 bg-muted/20 rounded-xl border border-border/60 space-y-3">
+                          <div className="flex items-start justify-between">
+                            <div className="flex items-center gap-2.5">
+                              <div className="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-xs">
+                                {post.profiles?.full_name?.[0] || "?"}
+                              </div>
+                              <div>
+                                <p className="text-xs font-semibold text-foreground">
+                                  {post.profiles?.full_name || "Course Learner"}
+                                </p>
+                                <p className="text-[10px] text-muted-foreground">
+                                  {new Date(post.created_at).toLocaleDateString("en-NG", { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })}
+                                </p>
+                              </div>
+                            </div>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="h-7 text-xs text-primary"
+                              onClick={() => setReplyingTo(replyingTo === post.id ? null : post.id)}
+                            >
+                              Reply
+                            </Button>
+                          </div>
+                          <p className="text-sm text-foreground whitespace-pre-wrap pl-10">{post.content}</p>
+
+                          {/* Nested Replies */}
+                          {replies.length > 0 && (
+                            <div className="pl-8 space-y-2 pt-2 border-t border-border/40">
+                              {replies.map((reply: any) => (
+                                <div key={reply.id} className="flex items-start gap-2 text-xs bg-card p-3 rounded-lg border border-border/60">
+                                  <CornerDownRight className="h-3.5 w-3.5 text-muted-foreground shrink-0 mt-0.5" />
+                                  <div className="flex-1 min-w-0">
+                                    <div className="flex items-center justify-between mb-1">
+                                      <span className="font-semibold text-foreground">
+                                        {reply.profiles?.full_name || "Instructor / Peer"}
+                                      </span>
+                                      <span className="text-[10px] text-muted-foreground">
+                                        {new Date(reply.created_at).toLocaleDateString("en-NG", { month: "short", day: "numeric" })}
+                                      </span>
+                                    </div>
+                                    <p className="text-foreground whitespace-pre-wrap">{reply.content}</p>
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          )}
+
+                          {/* Reply Box */}
+                          {replyingTo === post.id && (
+                            <div className="pl-8 pt-2 space-y-2">
+                              <Textarea
+                                placeholder="Write your reply..."
+                                value={replyContent}
+                                onChange={(e) => setReplyContent(e.target.value)}
+                                rows={2}
+                                className="bg-background text-xs"
+                              />
+                              <div className="flex justify-end gap-2">
+                                <Button size="sm" variant="ghost" className="h-7 text-xs" onClick={() => { setReplyingTo(null); setReplyContent(""); }}>
+                                  Cancel
+                                </Button>
+                                <Button size="sm" className="h-7 text-xs bg-primary text-primary-foreground" onClick={() => handlePostReply(post.id)}>
+                                  Send Reply
+                                </Button>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
+                </div>
+              ) : (
+                <div className="text-center py-6 text-xs text-muted-foreground">
+                  No questions asked yet. Be the first to start a conversation!
+                </div>
+              )}
+            </div>
           </div>
         </div>
       ) : (

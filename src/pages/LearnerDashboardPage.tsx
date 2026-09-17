@@ -239,8 +239,10 @@ const LearnerDashboardPage = () => {
                           <Link to={`/course/${enrollment.course_id}`}><BookOpen className="h-3 w-3 mr-1" /> Review</Link>
                         </Button>
                         {cert && (
-                          <Button size="sm" className="h-8 text-xs bg-secondary hover:bg-secondary/90 text-secondary-foreground">
-                            <Award className="h-3 w-3 mr-1" /> View Certificate
+                          <Button size="sm" className="h-8 text-xs bg-secondary hover:bg-secondary/90 text-secondary-foreground" asChild>
+                            <Link to={`/verify-certificate/${cert.certificate_number}`}>
+                              <Award className="h-3 w-3 mr-1" /> View Certificate
+                            </Link>
                           </Button>
                         )}
                       </div>

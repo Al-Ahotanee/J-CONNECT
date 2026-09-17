@@ -21,6 +21,9 @@ export const createCourse = async (course: {
   duration?: string;
   is_free?: boolean;
   price?: number;
+  bank_name?: string;
+  account_number?: string;
+  account_name?: string;
   thumbnail_url?: string;
   instructor_id: string;
 }) => {
@@ -144,6 +147,21 @@ export const fetchDiscussions = async (courseId: string) => {
     .is("parent_id", null)
     .order("is_pinned", { ascending: false })
     .order("created_at", { ascending: false });
+  if (error) throw error;
+  if (!data?.length) return [];
+
+  const userIds = [...new Set(data.map(d => d.user_id))];
+  const { data: profiles } = await supabase.from("profiles").select("user_id, full_name, passport_photo_url").in("user_id", userIds);
+  const profileMap = new Map((profiles || []).map(p => [p.user_id, p]));
+  return data.map(d => ({ ...d, profiles: profileMap.get(d.user_id) || null }));
+};
+
+export const fetchAllDiscussions = async (courseId: string) => {
+  const { data, error } = await supabase
+    .from("discussion_posts")
+    .select("*")
+    .eq("course_id", courseId)
+    .order("created_at", { ascending: true });
   if (error) throw error;
   if (!data?.length) return [];
 
