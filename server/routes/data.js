@@ -347,6 +347,25 @@ router.get('/:table', optionalAuth, async (req, res) => {
   }
 });
 
+const tableColumnCache = new Map();
+
+async function getValidColumnsForTable(table) {
+  if (tableColumnCache.has(table)) {
+    return tableColumnCache.get(table);
+  }
+  try {
+    const cols = await query(`SHOW COLUMNS FROM \`${table}\``);
+    if (Array.isArray(cols) && cols.length > 0) {
+      const set = new Set(cols.map(c => c.Field));
+      tableColumnCache.set(table, set);
+      return set;
+    }
+  } catch (e) {
+    // fallback
+  }
+  return null;
+}
+
 // ==========================================
 // POST /api/data/:table (Insert or Upsert)
 // ==========================================
@@ -359,10 +378,20 @@ router.post('/:table', optionalAuth, async (req, res) => {
 
     const records = Array.isArray(req.body) ? req.body : [req.body];
     const inserted = [];
+    const validCols = await getValidColumnsForTable(table);
 
     for (const record of records) {
       const doc = { ...record };
       if (!doc.id) doc.id = uuidv4();
+
+      // Safe column filter: remove any fields not in MySQL schema
+      if (validCols) {
+        for (const k of Object.keys(doc)) {
+          if (!validCols.has(k)) {
+            delete doc[k];
+          }
+        }
+      }
 
       // Serialize objects / arrays to JSON string
       for (const [k, v] of Object.entries(doc)) {
@@ -417,6 +446,16 @@ router.patch('/:table', optionalAuth, async (req, res) => {
 
     const updates = { ...req.body };
     delete updates.id;
+
+    // Safe column filter: remove any fields not in MySQL schema
+    const validCols = await getValidColumnsForTable(table);
+    if (validCols) {
+      for (const k of Object.keys(updates)) {
+        if (!validCols.has(k)) {
+          delete updates[k];
+        }
+      }
+    }
 
     for (const [k, v] of Object.entries(updates)) {
       if (v !== null && typeof v === 'object') {

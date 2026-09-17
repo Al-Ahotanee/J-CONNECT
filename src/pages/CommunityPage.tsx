@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { Navigate } from "react-router-dom";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -15,7 +15,7 @@ import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import {
   Heart, MessageCircle, Share2, ThumbsUp, Users, Plus,
-  Send, Globe, Lock, User, Image, Smile, MoreHorizontal,
+  Send, Globe, Lock, User, Image, Video, Loader2, Smile, MoreHorizontal,
   UserPlus, Search, UserCheck, X,
 } from "lucide-react";
 
@@ -23,6 +23,10 @@ const CommunityPage = () => {
   const { user, loading: authLoading } = useAuth();
   const queryClient = useQueryClient();
   const [newPost, setNewPost] = useState("");
+  const [mediaFiles, setMediaFiles] = useState<{ url: string; name: string; type: "image" | "video" }[]>([]);
+  const [uploadingMedia, setUploadingMedia] = useState(false);
+  const imageInputRef = useRef<HTMLInputElement>(null);
+  const videoInputRef = useRef<HTMLInputElement>(null);
   const [showCreateGroup, setShowCreateGroup] = useState(false);
   const [groupForm, setGroupForm] = useState({ name: "", description: "", category: "" });
   const [commentInputs, setCommentInputs] = useState<Record<string, string>>({});
@@ -134,14 +138,47 @@ const CommunityPage = () => {
 
   if (authLoading) return <div className="flex-1 flex items-center justify-center"><p className="text-muted-foreground">Loading...</p></div>;
   if (!user) return <Navigate to="/login" />;
-  if (isAdmin) return <Navigate to="/dashboard" />;
+
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>, type: "image" | "video") => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+    setUploadingMedia(true);
+    try {
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        const ext = file.name.split(".").pop() || (type === "image" ? "png" : "mp4");
+        const filePath = `${user!.id}/${Date.now()}-${Math.random().toString(36).substring(2, 8)}.${ext}`;
+        const { error } = await supabase.storage.from("community-media").upload(filePath, file);
+        if (error) throw error;
+        const { data: { publicUrl } } = supabase.storage.from("community-media").getPublicUrl(filePath);
+        setMediaFiles(prev => [...prev, { url: publicUrl, name: file.name, type }]);
+      }
+      toast.success(`${type === "image" ? "Image" : "Video"} attached!`);
+    } catch (err: any) {
+      toast.error(`Upload failed: ${err.message || "Failed to upload file"}`);
+    } finally {
+      setUploadingMedia(false);
+      if (e.target) e.target.value = "";
+    }
+  };
+
+  const removeMedia = (index: number) => {
+    setMediaFiles(prev => prev.filter((_, i) => i !== index));
+  };
 
   const handleCreatePost = async () => {
-    if (!newPost.trim()) return;
+    if (!newPost.trim() && mediaFiles.length === 0) return;
     try {
-      const { error } = await supabase.from("social_posts").insert({ user_id: user.id, content: newPost, visibility: "public" });
+      const mediaUrls = mediaFiles.map(m => m.url);
+      const { error } = await supabase.from("social_posts").insert({
+        user_id: user.id,
+        content: newPost.trim() || (mediaUrls.length > 0 ? "Shared media" : ""),
+        media_urls: mediaUrls.length > 0 ? mediaUrls : null,
+        visibility: "public",
+      });
       if (error) throw error;
       setNewPost("");
+      setMediaFiles([]);
       queryClient.invalidateQueries({ queryKey: ["socialPosts"] });
       toast.success("Post published!");
     } catch (err: any) { toast.error(err.message); }
@@ -263,11 +300,76 @@ const CommunityPage = () => {
               <div className="flex-1">
                 <Textarea placeholder="What's on your mind?" value={newPost} onChange={e => setNewPost(e.target.value)}
                   className="min-h-[80px] resize-none border-0 bg-transparent p-0 focus-visible:ring-0 text-sm" />
+
+                {/* Uploaded media previews */}
+                {mediaFiles.length > 0 && (
+                  <div className="flex flex-wrap gap-2 mt-3 pt-3 border-t border-border">
+                    {mediaFiles.map((m, idx) => (
+                      <div key={idx} className="relative group rounded-lg overflow-hidden border border-border w-20 h-20 bg-muted flex items-center justify-center">
+                        {m.type === "image" ? (
+                          <img src={m.url} alt="" className="w-full h-full object-cover" />
+                        ) : (
+                          <video src={m.url} className="w-full h-full object-cover" />
+                        )}
+                        <button
+                          type="button"
+                          onClick={() => removeMedia(idx)}
+                          className="absolute top-1 right-1 bg-black/70 hover:bg-black text-white rounded-full p-0.5 transition-colors"
+                          title="Remove media"
+                        >
+                          <X className="h-3 w-3" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {uploadingMedia && (
+                  <div className="flex items-center gap-2 text-xs text-muted-foreground mt-2">
+                    <Loader2 className="h-3.5 w-3.5 animate-spin text-primary" />
+                    <span>Uploading media...</span>
+                  </div>
+                )}
+
                 <div className="flex items-center justify-between mt-3 pt-3 border-t border-border">
                   <div className="flex items-center gap-2">
-                    <Button variant="ghost" size="sm" className="text-xs text-muted-foreground"><Image className="h-3.5 w-3.5 mr-1" /> Photo</Button>
+                    <input
+                      ref={imageInputRef}
+                      type="file"
+                      accept="image/*"
+                      multiple
+                      className="hidden"
+                      onChange={e => handleFileUpload(e, "image")}
+                    />
+                    <input
+                      ref={videoInputRef}
+                      type="file"
+                      accept="video/*"
+                      className="hidden"
+                      onChange={e => handleFileUpload(e, "video")}
+                    />
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      className="text-xs text-muted-foreground hover:text-foreground"
+                      onClick={() => imageInputRef.current?.click()}
+                      disabled={uploadingMedia}
+                    >
+                      <Image className="h-3.5 w-3.5 mr-1 text-primary" /> Photo
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      className="text-xs text-muted-foreground hover:text-foreground"
+                      onClick={() => videoInputRef.current?.click()}
+                      disabled={uploadingMedia}
+                    >
+                      <Video className="h-3.5 w-3.5 mr-1 text-primary" /> Video
+                    </Button>
                   </div>
-                  <Button size="sm" onClick={handleCreatePost} disabled={!newPost.trim()}>
+                  <Button size="sm" onClick={handleCreatePost} disabled={(!newPost.trim() && mediaFiles.length === 0) || uploadingMedia}>
                     <Send className="h-3.5 w-3.5 mr-1" /> Post
                   </Button>
                 </div>
@@ -308,6 +410,41 @@ const CommunityPage = () => {
                     </div>
                   </div>
                   <p className="text-sm text-foreground whitespace-pre-wrap">{post.content}</p>
+
+                  {/* Media attachments */}
+                  {(() => {
+                    let urls: string[] = [];
+                    if (Array.isArray(post.media_urls)) {
+                      urls = post.media_urls;
+                    } else if (typeof post.media_urls === "string") {
+                      try {
+                        const parsed = JSON.parse(post.media_urls);
+                        if (Array.isArray(parsed)) urls = parsed;
+                        else if (parsed) urls = [parsed];
+                      } catch {
+                        if (post.media_urls.startsWith("http") || post.media_urls.startsWith("/")) {
+                          urls = [post.media_urls];
+                        }
+                      }
+                    }
+                    if (urls.length === 0) return null;
+                    return (
+                      <div className="mt-3">
+                        <div className={`grid gap-2 ${urls.length === 1 ? "grid-cols-1" : "grid-cols-2"}`}>
+                          {urls.map((url, idx) => {
+                            const isVideo = url.match(/\.(mp4|webm|ogg|mov)$/i);
+                            return isVideo ? (
+                              <video key={idx} src={url} controls className="rounded-lg w-full max-h-80 bg-black" />
+                            ) : (
+                              <a key={idx} href={url} target="_blank" rel="noreferrer" className="block overflow-hidden rounded-lg border border-border">
+                                <img src={url} alt="" className="w-full h-64 object-cover hover:scale-105 transition-transform duration-200" />
+                              </a>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    );
+                  })()}
                 </div>
 
                 {/* Engagement counts */}
