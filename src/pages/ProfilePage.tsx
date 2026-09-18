@@ -29,12 +29,14 @@ const ProfilePage = () => {
   const { data: education } = useQuery({ queryKey: ["education", user?.id], queryFn: () => fetchEducation(user!.id), enabled: !!user });
   const { data: certificates } = useQuery({ queryKey: ["myCertificates", user?.id], queryFn: () => fetchUserCertificates(user!.id), enabled: !!user });
 
+  const [imgFailed, setImgFailed] = useState(false);
   const [form, setForm] = useState<Record<string, any>>({});
 
   useEffect(() => {
     if (profile) {
       setForm({
-        full_name: profile.full_name || "", gender: profile.gender || "", date_of_birth: profile.date_of_birth || "",
+        full_name: profile.full_name || "", gender: profile.gender || "",
+        date_of_birth: profile.date_of_birth ? String(profile.date_of_birth).split("T")[0] : "",
         marital_status: profile.marital_status || "", lga: profile.lga || "", ward: profile.ward || "",
         village: profile.village || "", phone: profile.phone || "", residential_address: profile.residential_address || "",
         nin: profile.nin || "", employment_status: profile.employment_status || "", current_employer: profile.current_employer || "",
@@ -76,6 +78,7 @@ const ProfilePage = () => {
       if (uploadError) throw uploadError;
       const { data: { publicUrl } } = supabase.storage.from("avatars").getPublicUrl(path);
       await updateProfile(user.id, { passport_photo_url: publicUrl });
+      setImgFailed(false);
       queryClient.invalidateQueries({ queryKey: ["profile"] });
       toast.success("Photo uploaded!");
     } catch (err: any) { toast.error(err.message || "Failed to upload"); }
@@ -132,8 +135,13 @@ const ProfilePage = () => {
         <h2 className="font-display text-sm font-semibold text-foreground mb-4">Passport Photo</h2>
         <div className="flex items-center gap-5">
           <div className="relative">
-            {profile?.passport_photo_url ? (
-              <img src={profile.passport_photo_url} alt="Photo" className="w-20 h-20 rounded-xl object-cover border-2 border-border" />
+            {profile?.passport_photo_url && !imgFailed ? (
+              <img
+                src={profile.passport_photo_url}
+                alt="Photo"
+                onError={() => setImgFailed(true)}
+                className="w-20 h-20 rounded-xl object-cover border-2 border-border"
+              />
             ) : (
               <div className="w-20 h-20 rounded-xl bg-muted flex items-center justify-center border-2 border-dashed border-border">
                 <User className="h-8 w-8 text-muted-foreground" />
@@ -162,7 +170,7 @@ const ProfilePage = () => {
           <div className="space-y-1.5"><Label className="text-xs">Gender</Label>
             <Select value={form.gender || ""} onValueChange={(v) => update("gender", v)}><SelectTrigger><SelectValue placeholder="Select" /></SelectTrigger><SelectContent><SelectItem value="Male">Male</SelectItem><SelectItem value="Female">Female</SelectItem></SelectContent></Select>
           </div>
-          <div className="space-y-1.5"><Label className="text-xs">Date of Birth</Label><Input type="date" value={form.date_of_birth || ""} onChange={(e) => update("date_of_birth", e.target.value)} /></div>
+          <div className="space-y-1.5"><Label className="text-xs">Date of Birth</Label><Input type="date" value={form.date_of_birth ? String(form.date_of_birth).split("T")[0] : ""} onChange={(e) => update("date_of_birth", e.target.value)} /></div>
           <div className="space-y-1.5"><Label className="text-xs">Marital Status</Label>
             <Select value={form.marital_status || ""} onValueChange={(v) => update("marital_status", v)}><SelectTrigger><SelectValue placeholder="Select" /></SelectTrigger><SelectContent>{["Single","Married","Divorced","Widowed"].map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}</SelectContent></Select>
           </div>

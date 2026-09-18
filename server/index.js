@@ -35,6 +35,17 @@ app.use(express.urlencoded({ extended: true, limit: '25mb' }));
 // Static uploads serving
 app.use('/uploads', express.static(uploadRoot));
 
+// Fallback for missing avatars (e.g. following ephemeral container redeployments)
+const defaultAvatarSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+  <circle cx="50" cy="50" r="50" fill="#f1f5f9"/>
+  <circle cx="50" cy="38" r="18" fill="#94a3b8"/>
+  <path d="M 22 84 C 22 64, 78 64, 78 84 Z" fill="#94a3b8"/>
+</svg>`;
+app.use('/uploads/avatars', (req, res) => {
+  res.setHeader('Content-Type', 'image/svg+xml');
+  res.send(defaultAvatarSvg);
+});
+
 // Health check endpoint
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString(), platform: 'J-Connect', version: '2.0.0' });

@@ -723,7 +723,7 @@ const CitizenDBAdminPage = () => {
               </div>
               <div>
                 <Label className="text-xs">Date of Birth</Label>
-                <Input className="text-xs" type="date" value={editingProfile.date_of_birth || ""} onChange={e => setEditingProfile({ ...editingProfile, date_of_birth: e.target.value })} />
+                <Input className="text-xs" type="date" value={editingProfile.date_of_birth ? String(editingProfile.date_of_birth).split("T")[0] : ""} onChange={e => setEditingProfile({ ...editingProfile, date_of_birth: e.target.value })} />
               </div>
               <div className="col-span-2">
                 <Label className="text-xs">Address</Label>
