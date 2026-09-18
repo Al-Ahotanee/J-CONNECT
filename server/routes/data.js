@@ -82,6 +82,14 @@ const RELATION_MAP = {
   },
   saved_candidates: {
     profiles: { table: 'profiles', foreignKey: 'user_id', localKey: 'candidate_id', isArray: false },
+  },
+  approval_workflows: {
+    profiles: { table: 'profiles', foreignKey: 'user_id', localKey: 'submitted_by', isArray: false },
+    reviewer: { table: 'profiles', foreignKey: 'user_id', localKey: 'reviewer_id', isArray: false },
+  },
+  audit_logs: {
+    profiles: { table: 'profiles', foreignKey: 'user_id', localKey: 'user_id', isArray: false },
+    actor: { table: 'profiles', foreignKey: 'user_id', localKey: 'actor_id', isArray: false },
   }
 };
 
@@ -175,7 +183,7 @@ function parseJsonColumns(row) {
   const jsonCols = [
     'skills', 'certifications', 'skills_required', 'documents', 'screening_answers',
     'options', 'answers', 'participants', 'media_urls', 'metadata', 'old_data', 'new_data',
-    'custom_questions', 'custom_answers', 'benefits'
+    'custom_questions', 'custom_answers', 'benefits', 'details'
   ];
   for (const col of jsonCols) {
     if (row[col] !== undefined && typeof row[col] === 'string') {
