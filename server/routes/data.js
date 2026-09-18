@@ -61,6 +61,21 @@ const RELATION_MAP = {
     jobs: { table: 'jobs', foreignKey: 'id', localKey: 'job_id', isArray: false },
     profiles: { table: 'profiles', foreignKey: 'user_id', localKey: 'user_id', isArray: false },
   },
+  job_offers: {
+    jobs: { table: 'jobs', foreignKey: 'id', localKey: 'job_id', isArray: false },
+    profiles: { table: 'profiles', foreignKey: 'user_id', localKey: 'user_id', isArray: false },
+  },
+  interview_invitations: {
+    jobs: { table: 'jobs', foreignKey: 'id', localKey: 'job_id', isArray: false },
+    profiles: { table: 'profiles', foreignKey: 'user_id', localKey: 'user_id', isArray: false },
+  },
+  candidate_scores: {
+    profiles: { table: 'profiles', foreignKey: 'user_id', localKey: 'recruiter_id', isArray: false },
+    job_applications: { table: 'job_applications', foreignKey: 'id', localKey: 'application_id', isArray: false },
+  },
+  company_reviews: {
+    profiles: { table: 'profiles', foreignKey: 'user_id', localKey: 'user_id', isArray: false },
+  },
   jobs: {
     applications: { table: 'job_applications', foreignKey: 'job_id', localKey: 'id', isArray: true },
     profiles: { table: 'profiles', foreignKey: 'user_id', localKey: 'posted_by', isArray: false },
@@ -157,7 +172,11 @@ async function resolveRelations(parentTable, rows, selectStr) {
 
 function parseJsonColumns(row) {
   if (!row) return row;
-  const jsonCols = ['skills', 'certifications', 'skills_required', 'documents', 'screening_answers', 'options', 'answers', 'participants', 'media_urls', 'metadata', 'old_data', 'new_data'];
+  const jsonCols = [
+    'skills', 'certifications', 'skills_required', 'documents', 'screening_answers',
+    'options', 'answers', 'participants', 'media_urls', 'metadata', 'old_data', 'new_data',
+    'custom_questions', 'custom_answers', 'benefits'
+  ];
   for (const col of jsonCols) {
     if (row[col] !== undefined && typeof row[col] === 'string') {
       try {
@@ -442,8 +461,10 @@ function normalizeDocValues(table, doc, reqUser) {
   }
 
   for (const [k, v] of Object.entries(doc)) {
-    if (typeof v === 'string' && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/.test(v)) {
-      doc[k] = v.replace('T', ' ').replace(/\..+$/, '').replace('Z', '');
+    if (typeof v === 'string' && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/.test(v)) {
+      let cleaned = v.replace('T', ' ').replace(/\..+$/, '').replace('Z', '');
+      if (cleaned.length === 16) cleaned += ':00';
+      doc[k] = cleaned;
     }
   }
 }
@@ -539,8 +560,10 @@ router.patch('/:table', optionalAuth, async (req, res) => {
     delete updates.id;
 
     for (const [k, v] of Object.entries(updates)) {
-      if (typeof v === 'string' && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/.test(v)) {
-        updates[k] = v.replace('T', ' ').replace(/\..+$/, '').replace('Z', '');
+      if (typeof v === 'string' && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/.test(v)) {
+        let cleaned = v.replace('T', ' ').replace(/\..+$/, '').replace('Z', '');
+        if (cleaned.length === 16) cleaned += ':00';
+        updates[k] = cleaned;
       }
     }
 
