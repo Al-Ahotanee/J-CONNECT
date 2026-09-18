@@ -151,7 +151,8 @@ class QueryBuilder {
 
   maybeSingle() {
     this.isSingle = true;
-    this.queryParams.single = "true";
+    delete this.queryParams.single;
+    this.queryParams.maybe_single = "true";
     return this;
   }
 
@@ -184,6 +185,9 @@ class QueryBuilder {
       const resJson = await res.json().catch(() => null);
 
       if (!res.ok) {
+        if (res.status === 404 && this.queryParams.maybe_single === "true") {
+          return { data: null, error: null };
+        }
         return {
           data: null,
           error: new Error(resJson?.error || `Request failed with status ${res.status}`),

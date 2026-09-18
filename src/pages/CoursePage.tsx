@@ -76,13 +76,13 @@ const CoursePage = () => {
   const { data: quizData } = useQuery({
     queryKey: ["courseQuiz", courseId],
     queryFn: async () => {
-      const { data: quiz } = await supabase.from("quizzes")
+      const { data: quizzes } = await supabase.from("quizzes")
         .select("*")
         .eq("course_id", courseId!)
         .eq("is_published", true)
         .order("created_at", { ascending: false })
-        .limit(1)
-        .single();
+        .limit(1);
+      const quiz = (quizzes as any)?.[0] || null;
       if (!quiz) return null;
       // Fetch questions from the public view (no correct_answer exposed)
       const { data: questions } = await supabase.from("quiz_questions_public")

@@ -265,7 +265,7 @@ router.get('/:table', optionalAuth, async (req, res) => {
 
     // Parse filters from query parameters
     for (const [key, rawVal] of Object.entries(req.query)) {
-      if (['select', 'order', 'limit', 'offset', 'single'].includes(key)) continue;
+      if (['select', 'order', 'limit', 'offset', 'single', 'maybe_single'].includes(key)) continue;
 
       if (key === 'or') {
         const orStr = String(rawVal);
@@ -409,6 +409,10 @@ router.get('/:table', optionalAuth, async (req, res) => {
 
     // Resolve embedded / joined resources requested in select
     await resolveRelations(table, parsedRows, req.query.select);
+
+    if (req.query.maybe_single === 'true') {
+      return res.json(parsedRows[0] || null);
+    }
 
     if (req.query.single === 'true') {
       if (parsedRows.length === 0) {
