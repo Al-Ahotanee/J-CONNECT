@@ -14,26 +14,47 @@ import { ChevronRight, User, Settings, LogOut, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import NotificationCenter from "@/components/NotificationCenter";
+import { HUBS, detectActiveHub } from "./navigationConfig";
+import { HubSwitcher } from "./HubSwitcher";
 
 const routeTitles: Record<string, string> = {
   "/dashboard": "Dashboard",
   "/profile": "My Profile",
   "/jobs": "Job Directory",
+  "/job-seeker": "Job Seeker Desk",
   "/applications": "My Applications",
   "/cv": "CV Generator",
-  "/learning": "E-Learning",
-  "/mentorship": "Mentorship",
-  "/chat": "Messages",
-  "/search": "Search",
-  "/admin": "Admin Panel",
-  "/recruiter": "Recruiter Panel",
-  "/analytics": "Analytics & BI",
+  "/learning": "Course Catalog",
+  "/learning/creator": "Instructor Studio",
+  "/learning/admin": "Curriculum Admin",
+  "/cbt-admin": "CBT & Assessments",
+  "/verify-certificate": "Verify Certificate",
+  "/mentorship": "Mentorship Coaching",
+  "/mentorship-marketplace": "Mentor Marketplace",
+  "/mentorship-admin": "Mentorship Administration",
+  "/community": "Community Feed",
+  "/chat": "Direct Messages",
+  "/video-meetings": "Virtual Meetings",
+  "/search": "Global Search",
+  "/admin": "Governance & Admin Panel",
+  "/citizen-db": "Citizen Registry",
+  "/recruiter": "Recruiter Portal",
+  "/recruitment-admin": "Recruitment Pipeline",
+  "/recruitment-analytics": "Recruitment Analytics",
+  "/talent-marketplace": "Talent Marketplace",
+  "/companies": "Company Profiles",
+  "/analytics": "Executive Analytics & BI",
   "/smart-match": "Smart Job Match",
   "/ai-coach": "AI Interview Coach",
   "/announcements": "Announcements",
   "/bulk-operations": "Bulk Operations",
   "/notifications": "Notifications",
-  "/workflows": "Workflow Automation",
+  "/workflows": "Workflow Approvals",
+  "/audit-logs": "Audit Trail Logs",
+  "/branding": "Portal Customization",
+  "/lga-officer": "LGA Operations Desk",
+  "/ward-officer": "Ward Verification Desk",
+  "/career-profile": "Career Profile",
 };
 
 const DashboardHeader = () => {
@@ -41,7 +62,10 @@ const DashboardHeader = () => {
   const navigate = useNavigate();
   const { user, signOut } = useAuth();
   const [searchQuery, setSearchQuery] = useState("");
-  const pageTitle = routeTitles[location.pathname] || "Page";
+  
+  const activeHubId = detectActiveHub(location.pathname);
+  const currentHub = HUBS[activeHubId];
+  const pageTitle = routeTitles[location.pathname] || "Workspace";
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -53,20 +77,42 @@ const DashboardHeader = () => {
 
   return (
     <header className="sticky top-0 z-30 h-14 bg-card/95 backdrop-blur-sm border-b border-border flex items-center justify-between px-4 gap-4">
-      <div className="flex items-center gap-3">
-        <SidebarTrigger className="text-muted-foreground hover:text-foreground" />
-        <div className="hidden sm:flex items-center gap-1.5 text-sm">
-          <Link to="/dashboard" className="text-muted-foreground hover:text-foreground transition-colors">
+      <div className="flex items-center gap-3 min-w-0">
+        <SidebarTrigger className="text-muted-foreground hover:text-foreground shrink-0" />
+        
+        {/* Responsive Breadcrumbs */}
+        <div className="hidden sm:flex items-center gap-1.5 text-sm truncate">
+          <Link to="/dashboard" className="text-muted-foreground hover:text-foreground transition-colors shrink-0">
             Home
           </Link>
-          <ChevronRight className="h-3 w-3 text-muted-foreground/50" />
-          <span className="font-medium text-foreground">{pageTitle}</span>
+          
+          {activeHubId !== "central" && (
+            <>
+              <ChevronRight className="h-3 w-3 text-muted-foreground/50 shrink-0" />
+              <Link
+                to={currentHub.defaultPath}
+                className="text-muted-foreground hover:text-foreground transition-colors font-medium shrink-0 flex items-center gap-1"
+              >
+                <currentHub.icon className="h-3.5 w-3.5 text-muted-foreground" />
+                <span>{currentHub.shortName}</span>
+              </Link>
+            </>
+          )}
+
+          <ChevronRight className="h-3 w-3 text-muted-foreground/50 shrink-0" />
+          <span className="font-semibold text-foreground truncate">{pageTitle}</span>
         </div>
-        <span className="sm:hidden font-display font-semibold text-foreground">{pageTitle}</span>
+
+        {/* Mobile Title */}
+        <div className="sm:hidden flex items-center gap-1.5 min-w-0">
+          <span className="font-display font-semibold text-foreground truncate text-sm">
+            {pageTitle}
+          </span>
+        </div>
       </div>
 
-      <div className="flex items-center gap-2">
-        {/* Search */}
+      <div className="flex items-center gap-2 shrink-0">
+        {/* Quick Search */}
         <form onSubmit={handleSearch} className="hidden md:block">
           <div className="relative">
             <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
@@ -74,10 +120,13 @@ const DashboardHeader = () => {
               placeholder="Quick search..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="h-8 w-48 pl-8 text-xs bg-muted/50 border-0 focus-visible:ring-1"
+              className="h-8 w-44 pl-8 text-xs bg-muted/50 border-0 focus-visible:ring-1"
             />
           </div>
         </form>
+
+        {/* Workspace Quick Switcher in Header */}
+        <HubSwitcher variant="header" />
 
         {/* Notifications */}
         <NotificationCenter />
