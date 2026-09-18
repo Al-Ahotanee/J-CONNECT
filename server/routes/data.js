@@ -90,6 +90,34 @@ const RELATION_MAP = {
   audit_logs: {
     profiles: { table: 'profiles', foreignKey: 'user_id', localKey: 'user_id', isArray: false },
     actor: { table: 'profiles', foreignKey: 'user_id', localKey: 'actor_id', isArray: false },
+  },
+  social_posts: {
+    profiles: { table: 'profiles', foreignKey: 'user_id', localKey: 'user_id', isArray: false },
+    social_groups: { table: 'social_groups', foreignKey: 'id', localKey: 'group_id', isArray: false },
+    comments: { table: 'social_comments', foreignKey: 'post_id', localKey: 'id', isArray: true },
+    reactions: { table: 'social_reactions', foreignKey: 'post_id', localKey: 'id', isArray: true },
+  },
+  social_comments: {
+    profiles: { table: 'profiles', foreignKey: 'user_id', localKey: 'user_id', isArray: false },
+    post: { table: 'social_posts', foreignKey: 'id', localKey: 'post_id', isArray: false },
+  },
+  social_reactions: {
+    profiles: { table: 'profiles', foreignKey: 'user_id', localKey: 'user_id', isArray: false },
+  },
+  social_groups: {
+    creator: { table: 'profiles', foreignKey: 'user_id', localKey: 'created_by', isArray: false },
+    profiles: { table: 'profiles', foreignKey: 'user_id', localKey: 'created_by', isArray: false },
+    members: { table: 'social_group_members', foreignKey: 'group_id', localKey: 'id', isArray: true },
+    posts: { table: 'social_posts', foreignKey: 'group_id', localKey: 'id', isArray: true },
+  },
+  social_group_members: {
+    profiles: { table: 'profiles', foreignKey: 'user_id', localKey: 'user_id', isArray: false },
+    group: { table: 'social_groups', foreignKey: 'id', localKey: 'group_id', isArray: false },
+  },
+  social_follows: {
+    profiles: { table: 'profiles', foreignKey: 'user_id', localKey: 'following_id', isArray: false },
+    following: { table: 'profiles', foreignKey: 'user_id', localKey: 'following_id', isArray: false },
+    follower: { table: 'profiles', foreignKey: 'user_id', localKey: 'follower_id', isArray: false },
   }
 };
 
