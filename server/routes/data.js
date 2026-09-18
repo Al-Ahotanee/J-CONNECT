@@ -53,6 +53,28 @@ const RELATION_MAP = {
   mentors: {
     profiles: { table: 'profiles', foreignKey: 'user_id', localKey: 'user_id', isArray: false },
   },
+  mentorship_sessions: {
+    mentor: { table: 'profiles', foreignKey: 'user_id', localKey: 'mentor_id', isArray: false },
+    mentee: { table: 'profiles', foreignKey: 'user_id', localKey: 'mentee_id', isArray: false },
+    mapping: { table: 'mentorship_mappings', foreignKey: 'id', localKey: 'mapping_id', isArray: false },
+  },
+  mentorship_goals: {
+    mapping: { table: 'mentorship_mappings', foreignKey: 'id', localKey: 'mapping_id', isArray: false },
+    profiles: { table: 'profiles', foreignKey: 'user_id', localKey: 'created_by', isArray: false },
+  },
+  mentor_ratings: {
+    mentor: { table: 'profiles', foreignKey: 'user_id', localKey: 'mentor_id', isArray: false },
+    mentee: { table: 'profiles', foreignKey: 'user_id', localKey: 'mentee_id', isArray: false },
+    mapping: { table: 'mentorship_mappings', foreignKey: 'id', localKey: 'mapping_id', isArray: false },
+  },
+  mentorship_listings: {
+    profiles: { table: 'profiles', foreignKey: 'user_id', localKey: 'user_id', isArray: false },
+  },
+  mentorship_requests: {
+    from_profile: { table: 'profiles', foreignKey: 'user_id', localKey: 'from_user_id', isArray: false },
+    to_profile: { table: 'profiles', foreignKey: 'user_id', localKey: 'to_user_id', isArray: false },
+    profiles: { table: 'profiles', foreignKey: 'user_id', localKey: 'from_user_id', isArray: false },
+  },
   skill_endorsements: {
     endorser: { table: 'profiles', foreignKey: 'user_id', localKey: 'endorser_id', isArray: false },
     profiles: { table: 'profiles', foreignKey: 'user_id', localKey: 'user_id', isArray: false },
