@@ -38,6 +38,31 @@ export async function initDatabase() {
   }
   console.log('[Seed] Schema created successfully.');
 
+  // Ensure table columns auto-migration for newly added schema fields
+  const columnMigrations = [
+    { table: 'courses', column: 'bank_name', ddl: 'ALTER TABLE `courses` ADD COLUMN `bank_name` VARCHAR(100)' },
+    { table: 'courses', column: 'account_number', ddl: 'ALTER TABLE `courses` ADD COLUMN `account_number` VARCHAR(20)' },
+    { table: 'courses', column: 'account_name', ddl: 'ALTER TABLE `courses` ADD COLUMN `account_name` VARCHAR(100)' },
+    { table: 'courses', column: 'currency', ddl: "ALTER TABLE `courses` ADD COLUMN `currency` VARCHAR(10) DEFAULT 'NGN'" },
+    { table: 'course_materials', column: 'file_size', ddl: 'ALTER TABLE `course_materials` MODIFY COLUMN `file_size` BIGINT DEFAULT 0' },
+  ];
+
+  for (const m of columnMigrations) {
+    try {
+      if (m.ddl.includes('ADD COLUMN')) {
+        const cols = await query(`SHOW COLUMNS FROM \`${m.table}\` LIKE '${m.column}'`);
+        if (!cols || cols.length === 0) {
+          console.log(`[Seed] Adding missing column ${m.column} to ${m.table}...`);
+          await query(m.ddl);
+        }
+      } else {
+        await query(m.ddl).catch(() => {});
+      }
+    } catch (err) {
+      console.warn(`[Seed] Migration note for ${m.table}.${m.column}:`, err.message);
+    }
+  }
+
   // Automatically sync all 49 tables and snapshot data from db_data.json if present
   await syncSnapshotToDatabase();
 

@@ -304,7 +304,7 @@ async function runELearningLiveUAT() {
     assert('Upload Presentation Slide Deck (.pptx) via multipart/form-data', uploadPptx.status === 200 && !!uploadPptx.body?.publicUrl);
     const pptxUrl = uploadPptx.body?.publicUrl;
 
-    // Insert course_materials records in database
+    // Insert course_materials records in database (file_size in bytes as sent by frontend File.size)
     const mat1 = await request('/api/data/course_materials', {
       method: 'POST',
       token: creatorToken,
@@ -314,7 +314,7 @@ async function runELearningLiveUAT() {
         title: 'Lecture 1 Video Recording (Full High-Def MP4)',
         file_url: videoUrl,
         file_type: 'mp4',
-        file_size: '42.5 MB',
+        file_size: 44564480, // 42.5 MB
       },
     });
     const mat2 = await request('/api/data/course_materials', {
@@ -326,7 +326,7 @@ async function runELearningLiveUAT() {
         title: 'Microservices Topology Architecture Diagram (PNG)',
         file_url: imageUrl,
         file_type: 'png',
-        file_size: '2.4 MB',
+        file_size: 2516582, // 2.4 MB
       },
     });
     const mat3 = await request('/api/data/course_materials', {
@@ -338,7 +338,7 @@ async function runELearningLiveUAT() {
         title: 'Official State Cloud Engineering Curriculum & Lab Manual (PDF)',
         file_url: pdfUrl,
         file_type: 'pdf',
-        file_size: '8.1 MB',
+        file_size: 8493465, // 8.1 MB
       },
     });
     const mat4 = await request('/api/data/course_materials', {
@@ -350,7 +350,7 @@ async function runELearningLiveUAT() {
         title: 'Executive Presentation: Security & Governance Slide Deck (PPTX)',
         file_url: pptxUrl,
         file_type: 'pptx',
-        file_size: '15.6 MB',
+        file_size: 16357785, // 15.6 MB
       },
     });
 
@@ -453,7 +453,7 @@ async function runELearningLiveUAT() {
     });
     assert('Student enrolls into course successfully', enrollRes.status === 201 && !!enrollRes.body?.id);
     const enrollId = enrollRes.body?.id;
-    assert('Initial enrollment state is 0% progress and completed = false', enrollRes.body?.progress === 0 && enrollRes.body?.completed === false);
+    assert('Initial enrollment state is 0% progress and completed = false', Number(enrollRes.body?.progress) === 0 && (enrollRes.body?.completed === false || enrollRes.body?.completed === 0 || enrollRes.body?.completed === '0'));
 
     // ------------------------------------------------------------------
     // SUITE 8: Sequential Progress Tracking (0% -> 33% -> 67% -> 100%)

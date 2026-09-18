@@ -357,6 +357,41 @@ async function getValidColumnsForTable(table) {
     const cols = await query(`SHOW COLUMNS FROM \`${table}\``);
     if (Array.isArray(cols) && cols.length > 0 && cols[0] && typeof cols[0].Field === 'string') {
       const set = new Set(cols.map(c => c.Field));
+
+      // Auto-migrate newly required columns if missing on remote DB
+      if (table === 'courses') {
+        if (!set.has('bank_name')) {
+          try {
+            await query('ALTER TABLE `courses` ADD COLUMN `bank_name` VARCHAR(100)');
+            set.add('bank_name');
+          } catch (e) {}
+        }
+        if (!set.has('account_number')) {
+          try {
+            await query('ALTER TABLE `courses` ADD COLUMN `account_number` VARCHAR(20)');
+            set.add('account_number');
+          } catch (e) {}
+        }
+        if (!set.has('account_name')) {
+          try {
+            await query('ALTER TABLE `courses` ADD COLUMN `account_name` VARCHAR(100)');
+            set.add('account_name');
+          } catch (e) {}
+        }
+        if (!set.has('currency')) {
+          try {
+            await query("ALTER TABLE `courses` ADD COLUMN `currency` VARCHAR(10) DEFAULT 'NGN'");
+            set.add('currency');
+          } catch (e) {}
+        }
+      }
+
+      if (table === 'course_materials') {
+        try {
+          await query('ALTER TABLE `course_materials` MODIFY COLUMN `file_size` BIGINT DEFAULT 0');
+        } catch (e) {}
+      }
+
       tableColumnCache.set(table, set);
       return set;
     }
@@ -373,6 +408,25 @@ function normalizeDocValues(table, doc, reqUser) {
     }
     if (!doc.instructor_id) {
       doc.instructor_id = doc.created_by || doc.creator_id || reqUser?.id || 'instructor-default';
+    }
+  } else if (table === 'course_materials') {
+    if (doc.file_size !== undefined && doc.file_size !== null) {
+      if (typeof doc.file_size === 'string') {
+        const m = doc.file_size.match(/^([\d.]+)\s*(MB|KB|GB|B)?$/i);
+        if (m) {
+          const num = parseFloat(m[1]);
+          const unit = (m[2] || 'B').toUpperCase();
+          if (unit === 'GB') doc.file_size = Math.round(num * 1024 * 1024 * 1024);
+          else if (unit === 'MB') doc.file_size = Math.round(num * 1024 * 1024);
+          else if (unit === 'KB') doc.file_size = Math.round(num * 1024);
+          else doc.file_size = Math.round(num);
+        } else {
+          const parsed = parseInt(doc.file_size, 10);
+          doc.file_size = isNaN(parsed) ? 0 : parsed;
+        }
+      } else if (typeof doc.file_size === 'number') {
+        doc.file_size = Math.round(doc.file_size);
+      }
     }
   } else if (table === 'mentors') {
     if (!doc.category) {
